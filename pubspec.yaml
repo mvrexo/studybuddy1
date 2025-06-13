@@ -1,0 +1,118 @@
+name: studdybuddy1
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  lottie: ^3.3.1
+
+  audioplayers: ^5.2.1          # Untuk main bunyi/audio
+  video_player: ^2.5.0          # Untuk main video
+  provider: ^6.0.5              # Contoh state management kalau hang guna
+  shared_preferences: ^2.2.2    # Simpan data lokal macam progress
+  http: ^1.4.0                 # Kalau nak fetch data dari internet
+  animated_text_kit: ^4.2.2
+  intl: ^0.19.0
+  table_calendar: ^3.0.9
+  image_picker: ^1.1.2
+  google_fonts: ^6.1.0
+  path_provider: ^2.0.15
+  permission_handler_html: ^0.1.0  # Untuk handle permission macam kamera, storage
+  pdf: ^3.11.3
+  screenshot: ^3.0.0
+  printing: ^5.14.2
+  pie_chart: ^5.3.2
+  fl_chart: ^1.0.0
+  url_launcher: ^6.2.5
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+
+  assets:
+    # Gambar
+    - assets/bee.gif
+    - assets/awan.jpg
+    - assets/comel.avif
+    - assets/cute.avif
+    - assets/budak.jpg
+    - assets/bee1.gif
+    - assets/logo.png
+    - assets/putih.jpg
+    - assets/logo1.png
+    - assets/slide1.jpg
+    - assets/slide2.jpg
+    - assets/slide3.jpg
+    - assets/rabbit.gif
+    - assets/rabbit.png
+    - assets/cartoonbg.jpg
+    - assets/comel.gif
+    - assets/earth.jpg
+    - assets/hat.jpg
+    - assets/5.jpg
+    - assets/12.png
+    - assets/20.png
+    - assets/b.png
+    - assets/banana.jpg
+    - assets/bluesky.jpg
+    - assets/oxygen.jpg
+    - assets/pencil.png
+    - assets/sunlight.jpg
+    - assets/triangle.jpg
+    - assets/woof.jpg
+    - assets/water.jpg
+    - assets/13.jpg
+    - assets/studybuddylogo.gif
+    - assets/logobee.gif
+    - assets/logobee.png
+    - assets/putih1.jpg
+    - assets/c1.jpg
+    - assets/c2.jpg
+    - assets/c3.jpg
+    - assets/c4.jpg
+    - assets/c5.jpg
+    - assets/guess.jpg
+    - assets/suhu.jpg
+    - assets/plant.jpg
+    - assets/rocket.jpg
+    - assets/paperbg.jpg
+    - assets/reptiles.jpg
+    - assets/mammal.jpg
+    - assets/fish.jpg
+    - assets/frog.jpg
+    - assets/bird.jpg
+    - assets/animal.jpg
+    - assets/insect.jpg
+    - assets/bg.jpg
+    - assets/super.jpg
+    - assets/read.jpg
+    - assets/good.jpg
+
+    # Video
+    - assets/huruf.mp4
+    - assets/number.mp4
+    - assets/wrong.mp3
+    - assets/correct.mp3
+
+fonts:
+  - family: AlfaSlabOne
+    fonts:
+      - asset: assets/AlfaSlabOne-Regular.otf
+        weight: 700
+
+flutter_localizations:
+  sdk: flutter
