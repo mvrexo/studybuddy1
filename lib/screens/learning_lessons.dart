@@ -302,8 +302,9 @@ class _MathGameScreenState extends State<MathGameScreen> {
                     ),
                   );
                 },
-                onWillAccept: (_) => true,
-                onAccept: (data) => _handleAnswer(data, objectCount),
+                onWillAcceptWithDetails: (_) => true,
+                onAcceptWithDetails: (details) => _handleAnswer(details.data, objectCount),
+
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
