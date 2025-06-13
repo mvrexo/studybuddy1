@@ -1,0 +1,35 @@
+2025/06/13-16:10:15.605 1a50 Reusing MANIFEST C:\Users\SAYA\AppData\Local\Temp\flutter_tools.c2ca63a\flutter_tools_chrome_device.c07a434d\Default\IndexedDB\https_www.youtube.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/06/13-16:10:15.606 1a50 Recovering log #3
+2025/06/13-16:10:15.609 1a50 Reusing old log C:\Users\SAYA\AppData\Local\Temp\flutter_tools.c2ca63a\flutter_tools_chrome_device.c07a434d\Default\IndexedDB\https_www.youtube.com_0.indexeddb.leveldb/000003.log 
+2025/06/13-16:10:16.956 3ae0 Manual compaction at level-0 from '\x00\x06\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x07\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:16.988 3ae0 Level-0 table #5: started
+2025/06/13-16:10:16.992 3ae0 Level-0 table #5: 477194 bytes OK
+2025/06/13-16:10:16.993 3ae0 Delete type=0 #3
+2025/06/13-16:10:16.993 1a50 Manual compaction at level-0 from '\x00\x02\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x03\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:17.384 3ae0 Manual compaction at level-0 from '\x00\x03\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x04\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:17.384 3ae0 Manual compaction at level-1 from '\x00\x03\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x04\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:17.518 3ae0 Level-0 table #7: started
+2025/06/13-16:10:17.519 3ae0 Level-0 table #7: 6827 bytes OK
+2025/06/13-16:10:17.520 3ae0 Delete type=0 #4
+2025/06/13-16:10:17.521 3fa0 Manual compaction at level-0 from '\x00\x09\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0a\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:17.521 3fa0 Manual compaction at level-1 from '\x00\x09\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0a\x00\x00\x00' @ 0 : 0; will stop at '\x00\x10\x01 \x03\x00\x00\x00\x00\x00\x00\xf0?\x00\x04\x02\x01\x17\x00s\x00e\x00r\x00v\x00i\x00c\x00e\x00:\x00t\x00o\x00p\x00b\x00a\x00r\x00:\x00f\x00a\x00l\x00l\x00b\x00a\x00c\x00k\x03\x00\x00\x00\x00\x00\x00\xf0?' @ 2731 : 1
+2025/06/13-16:10:17.521 3fa0 Compacting 1@1 + 1@2 files
+2025/06/13-16:10:17.524 3fa0 Generated table #8@1: 345 keys, 17247 bytes
+2025/06/13-16:10:17.524 3fa0 Compacted 1@1 + 1@2 files => 17247 bytes
+2025/06/13-16:10:17.524 3fa0 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/06/13-16:10:17.525 3fa0 Delete type=2 #7
+2025/06/13-16:10:17.525 3fa0 Manual compaction at level-1 from '\x00\x10\x01 \x03\x00\x00\x00\x00\x00\x00\xf0?\x00\x04\x02\x01\x17\x00s\x00e\x00r\x00v\x00i\x00c\x00e\x00:\x00t\x00o\x00p\x00b\x00a\x00r\x00:\x00f\x00a\x00l\x00l\x00b\x00a\x00c\x00k\x03\x00\x00\x00\x00\x00\x00\xf0?' @ 2731 : 1 .. '\x00\x0a\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:17.768 3ae0 Level-0 table #10: started
+2025/06/13-16:10:17.770 3ae0 Level-0 table #10: 1297 bytes OK
+2025/06/13-16:10:17.770 3ae0 Delete type=2 #5
+2025/06/13-16:10:17.770 3ae0 Delete type=0 #6
+2025/06/13-16:10:17.771 3fa0 Manual compaction at level-0 from '\x00\x04\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x05\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:17.771 3fa0 Manual compaction at level-1 from '\x00\x04\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x05\x00\x00\x00' @ 0 : 0; will stop at '\x00\x0c\x01\x1f\x033\xa3\xc3\xd4\xd7vyB\x00\x01\x17\x00y\x00t\x00-\x00r\x00e\x00d\x00i\x00r\x00e\x00c\x00t\x00-\x00p\x00r\x00e\x00f\x00e\x00t\x00c\x00h\x00-\x00i\x00d' @ 2798 : 1
+2025/06/13-16:10:17.771 3fa0 Compacting 1@1 + 1@2 files
+2025/06/13-16:10:17.772 3fa0 Generated table #11@1: 316 keys, 17049 bytes
+2025/06/13-16:10:17.772 3fa0 Compacted 1@1 + 1@2 files => 17049 bytes
+2025/06/13-16:10:17.772 3fa0 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/06/13-16:10:17.773 3fa0 Delete type=2 #10
+2025/06/13-16:10:17.773 3fa0 Manual compaction at level-1 from '\x00\x0c\x01\x1f\x033\xa3\xc3\xd4\xd7vyB\x00\x01\x17\x00y\x00t\x00-\x00r\x00e\x00d\x00i\x00r\x00e\x00c\x00t\x00-\x00p\x00r\x00e\x00f\x00e\x00t\x00c\x00h\x00-\x00i\x00d' @ 2798 : 1 .. '\x00\x05\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:17.822 1a50 Manual compaction at level-0 from '\x00\x05\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x06\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/13-16:10:17.822 3fa0 Manual compaction at level-1 from '\x00\x05\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x06\x00\x00\x00' @ 0 : 0; will stop at (end)
