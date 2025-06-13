@@ -41,12 +41,12 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
   final Color pastelButton = const Color(0xFF716488);
 
   final List<Color> pastelCardColors = [
-    Color(0xFFFFF0F5), // LavenderBlush
-    Color(0xFFFFE4E1), // MistyRose
-    Color(0xFFFFFACD), // LemonChiffon
-    Color(0xFFE0FFFF), // LightCyan
-    Color(0xFFF0FFF0), // Honeydew
-    Color(0xFFF5F5DC), // Beige
+    const Color(0xFFFFF0F5), // LavenderBlush
+    const Color(0xFFFFE4E1), // MistyRose
+    const Color(0xFFFFFACD), // LemonChiffon
+    const Color(0xFFE0FFFF), // LightCyan
+    const Color(0xFFF0FFF0), // Honeydew
+    const Color(0xFFF5F5DC), // Beige
   ];
 
   Color getRandomCardColor(int index) {

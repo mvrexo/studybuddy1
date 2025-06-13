@@ -254,7 +254,7 @@ class _QuizPageState extends State<QuizPage> {
                                 color: tileColor,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(color: Colors.grey.shade400),
-                                boxShadow: [
+                                boxShadow: const [
                                   BoxShadow(
                                     color: Colors.black12,
                                     blurRadius: 4,

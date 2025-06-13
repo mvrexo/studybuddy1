@@ -90,7 +90,7 @@ class ProfileScreen extends StatelessWidget {
         LinearProgressIndicator(
           value: progress,
           backgroundColor: Colors.orange[100],
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+          valueColor: const AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
         ),
         const SizedBox(height: 10),
 

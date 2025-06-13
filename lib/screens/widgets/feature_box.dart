@@ -50,7 +50,7 @@ class FeatureBox extends StatelessWidget {
                   BoxShadow(
                     color: _pastelPrimary.withOpacity(0.3),
                     blurRadius: 8,
-                    offset: Offset(2, 4),
+                    offset: const Offset(2, 4),
                   ),
                 ]
               : null,
@@ -65,7 +65,7 @@ class FeatureBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(icon, size: 34, color: iconColor),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   title,
                   style: TextStyle(

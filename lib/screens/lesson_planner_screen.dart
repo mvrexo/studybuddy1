@@ -190,13 +190,13 @@ class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
                         focusedDay: _focusedDay,
                         selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
                         onDaySelected: _onDaySelected,
-                        calendarStyle: CalendarStyle(
+                        calendarStyle: const CalendarStyle(
                           todayDecoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 255, 191, 0),
+                            color: Color.fromARGB(255, 255, 191, 0),
                             shape: BoxShape.circle,
                           ),
                           selectedDecoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 255, 191, 0),
+                            color: Color.fromARGB(255, 255, 191, 0),
                             shape: BoxShape.circle,
                           ),
                           markerDecoration: BoxDecoration(
@@ -204,9 +204,9 @@ class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
                             shape: BoxShape.circle,
                           ),
                           weekendTextStyle:
-                              const TextStyle(color: Color.fromARGB(255, 0, 0, 0),),
+                              TextStyle(color: Color.fromARGB(255, 0, 0, 0),),
                           defaultTextStyle:
-                              const TextStyle(fontWeight: FontWeight.bold),
+                              TextStyle(fontWeight: FontWeight.bold),
                         ),
                         headerStyle: const HeaderStyle(
                           formatButtonVisible: false,

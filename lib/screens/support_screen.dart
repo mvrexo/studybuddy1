@@ -33,9 +33,9 @@ class SupportScreen extends StatelessWidget {
               title: const Text('Email us at support@studybuddy.com'),
               onTap: () {}, // you can integrate mailto: if needed
             ),
-            ListTile(
-              leading: const Icon(Icons.phone, color: Colors.deepOrange),
-              title: const Text('Call us at +6012-3456789'),
+            const ListTile(
+              leading: Icon(Icons.phone, color: Colors.deepOrange),
+              title: Text('Call us at +6012-3456789'),
             ),
           ],
         ),

@@ -66,7 +66,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
         shape: 'rectangle',
         color: Colors.lightGreenAccent,
         imageAsset: 'assets/animal.jpg',
-        position: Offset(620, 50));
+        position: const Offset(620, 50));
 
     double spacing = 220;
     double startX = 50;
@@ -149,7 +149,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
       context: context,
       builder: (_) => StatefulBuilder(
         builder: (context, setStateDialog) => AlertDialog(
-          title: Text("Edit Node"),
+          title: const Text("Edit Node"),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -157,13 +157,13 @@ class _MindMapScreenState extends State<MindMapScreen> {
                 // Label
                 TextField(
                     controller: labelCtrl,
-                    decoration: InputDecoration(labelText: 'Label')),
-                SizedBox(height: 10),
+                    decoration: const InputDecoration(labelText: 'Label')),
+                const SizedBox(height: 10),
                 // Shape selector
                 Row(
                   children: [
-                    Text("Shape: "),
-                    SizedBox(width: 10),
+                    const Text("Shape: "),
+                    const SizedBox(width: 10),
                     DropdownButton<String>(
                       value: selectedShape,
                       items: ['rectangle', 'circle', 'round']
@@ -182,12 +182,12 @@ class _MindMapScreenState extends State<MindMapScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 // Color picker
                 Row(
                   children: [
-                    Text("Color: "),
-                    SizedBox(width: 10),
+                    const Text("Color: "),
+                    const SizedBox(width: 10),
                     Wrap(
                       spacing: 8,
                       children: availableColors
@@ -214,16 +214,16 @@ class _MindMapScreenState extends State<MindMapScreen> {
                     )
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 // Image picker
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Image: "),
-                    SizedBox(width: 10),
+                    const Text("Image: "),
+                    const SizedBox(width: 10),
                     DropdownButton<String?>(
                       value: selectedImage,
-                      hint: Text("None"),
+                      hint: const Text("None"),
                       items: [null, ...availableImages]
                           .map((img) => DropdownMenuItem<String?>(
                                 value: img,
@@ -240,10 +240,10 @@ class _MindMapScreenState extends State<MindMapScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                Divider(),
+                const SizedBox(height: 10),
+                const Divider(),
                 // Facts list
-                Align(
+                const Align(
                     alignment: Alignment.centerLeft,
                     child: Text("Facts:",
                         style: TextStyle(fontWeight: FontWeight.bold))),
@@ -260,7 +260,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
                               },
                             )),
                             IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
+                              icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
                                 setStateDialog(() {
                                   node.facts.removeAt(entry.key);
@@ -270,7 +270,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
                           ],
                         ))
                     ,
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 // Add new fact
                 Row(
                   children: [
@@ -278,11 +278,11 @@ class _MindMapScreenState extends State<MindMapScreen> {
                       child: TextField(
                         controller: factCtrl,
                         decoration:
-                            InputDecoration(labelText: 'Add new fact'),
+                            const InputDecoration(labelText: 'Add new fact'),
                       ),
                     ),
                     IconButton(
-                        icon: Icon(Icons.add),
+                        icon: const Icon(Icons.add),
                         onPressed: () {
                           if (factCtrl.text.trim().isNotEmpty) {
                             setStateDialog(() {
@@ -305,7 +305,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
                   });
                   Navigator.pop(context);
                 },
-                child: Text("Delete", style: TextStyle(color: Colors.red)),
+                child: const Text("Delete", style: TextStyle(color: Colors.red)),
               ),
             TextButton(
                 onPressed: () {
@@ -317,7 +317,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
                   });
                   Navigator.pop(context);
                 },
-                child: Text("Save")),
+                child: const Text("Save")),
           ],
         ),
       ),
@@ -337,7 +337,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
     context: context,
     builder: (_) => StatefulBuilder(
       builder: (context, setStateDialog) => AlertDialog(
-        title: Text("Add New Node"),
+        title: const Text("Add New Node"),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -345,15 +345,15 @@ class _MindMapScreenState extends State<MindMapScreen> {
               // Label
               TextField(
                 controller: labelCtrl,
-                decoration: InputDecoration(labelText: 'Label'),
+                decoration: const InputDecoration(labelText: 'Label'),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
               // Shape selector
               Row(
                 children: [
-                  Text("Shape: "),
-                  SizedBox(width: 10),
+                  const Text("Shape: "),
+                  const SizedBox(width: 10),
                   DropdownButton<String>(
                     value: selectedShape,
                     items: ['rectangle', 'circle', 'round']
@@ -372,13 +372,13 @@ class _MindMapScreenState extends State<MindMapScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
               // Color picker
               Row(
                 children: [
-                  Text("Color: "),
-                  SizedBox(width: 10),
+                  const Text("Color: "),
+                  const SizedBox(width: 10),
                   Wrap(
                     spacing: 8,
                     children: availableColors
@@ -404,16 +404,16 @@ class _MindMapScreenState extends State<MindMapScreen> {
                   )
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
               // Image picker
               Row(
                 children: [
-                  Text("Image: "),
-                  SizedBox(width: 10),
+                  const Text("Image: "),
+                  const SizedBox(width: 10),
                   DropdownButton<String?>(
                     value: selectedImage,
-                    hint: Text("None"),
+                    hint: const Text("None"),
                     items: [null, ...availableImages]
                         .map((img) => DropdownMenuItem<String?>(
                               value: img,
@@ -428,11 +428,11 @@ class _MindMapScreenState extends State<MindMapScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
-              Divider(),
+              const SizedBox(height: 10),
+              const Divider(),
 
               // Facts section
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Facts:",
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -451,7 +451,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
+                            icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
                               setStateDialog(() {
                                 tempFacts.removeAt(entry.key);
@@ -461,17 +461,17 @@ class _MindMapScreenState extends State<MindMapScreen> {
                         ],
                       ))
                   ,
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: factCtrl,
-                      decoration: InputDecoration(labelText: 'Add new fact'),
+                      decoration: const InputDecoration(labelText: 'Add new fact'),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     onPressed: () {
                       if (factCtrl.text.trim().isNotEmpty) {
                         setStateDialog(() {
@@ -491,7 +491,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
             onPressed: () {
               Navigator.pop(context); // Cancel
             },
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
           ),
           TextButton(
             onPressed: () {
@@ -501,7 +501,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
                 color: selectedColor,
                 imageAsset: selectedImage,
                 facts: tempFacts,
-                position: Offset(100, 400),
+                position: const Offset(100, 400),
               );
 
               setState(() {
@@ -510,7 +510,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
 
               Navigator.pop(context);
             },
-            child: Text("Add"),
+            child: const Text("Add"),
           ),
         ],
       ),
@@ -545,7 +545,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Mind Map"),
+        title: const Text("Mind Map"),
         backgroundColor: Colors.teal,
       ),
       body: Stack(
@@ -577,25 +577,25 @@ class _MindMapScreenState extends State<MindMapScreen> {
                 FloatingActionButton(
                   heroTag: "btn_edit",
                   onPressed: () => _editNode(animalRoot),
-                  child: Icon(Icons.edit),
+                  child: const Icon(Icons.edit),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 FloatingActionButton(
                   heroTag: "btn_add",
                   onPressed: _addNode,
-                  child: Icon(Icons.add),
+                  child: const Icon(Icons.add),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 FloatingActionButton(
                   heroTag: "btn_image",
                   onPressed: _saveAsImage,
-                  child: Icon(Icons.image),
+                  child: const Icon(Icons.image),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 FloatingActionButton(
                   heroTag: "btn_pdf",
                   onPressed: _saveAsPdf,
-                  child: Icon(Icons.picture_as_pdf),
+                  child: const Icon(Icons.picture_as_pdf),
                 ),
               ],
             ),
@@ -637,9 +637,9 @@ class _MindMapScreenState extends State<MindMapScreen> {
         Row(
           children: [
             Icon(node.icon, color: node.color, size: 24),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(node.label,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
           ],
         ),
         if (node.imageAsset != null)
@@ -698,8 +698,8 @@ class _MindMapScreenState extends State<MindMapScreen> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
-        margin: EdgeInsets.all(8),
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.all(8),
         width: 250,
         decoration: decoration,
         child: content,
