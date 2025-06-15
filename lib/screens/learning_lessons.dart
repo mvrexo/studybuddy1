@@ -1,82 +1,111 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// Theme Colors
+final Color themePrimary = Colors.deepOrangeAccent;
+final Color themeBackground = const Color(0xFFFFF5E1);
+final Color themeAccent = const Color(0xFF8B4513);
+
+// ===================== Main Learning Lessons Screen =====================
 class LearningLessonsScreen extends StatelessWidget {
   const LearningLessonsScreen({super.key});
 
- @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(title: const Text('Lesson Subjects')),
-    body: Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: SubjectCard(
-                    title: 'Math',
-                    icon: Icons.calculate,
-                    imageUrl: 'https://cdn-icons-png.flaticon.com/512/1974/1974717.png',
-                    color: Colors.orange.shade300,
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const MathGameScreen()));
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: SubjectCard(
-                    title: 'English',
-                    icon: Icons.menu_book,
-                    imageUrl: 'https://cdn-icons-png.flaticon.com/512/2965/2965567.png',
-                    color: Colors.blue.shade300,
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const EnglishReadingScreen()));
-                    },
-                  ),
-                ),
-              ],
-            ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: themeBackground,
+      appBar: AppBar(
+        backgroundColor: themePrimary,
+        title: const Text(
+          'Learning Lessons',
+          style: TextStyle(
+            fontFamily: 'AlfaSlabOne',
+            color: Colors.white,
           ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: Row(
-              children: [
-                const Spacer(),
-                Expanded(
-                  flex: 5,
-                  child: SubjectCard(
-                    title: 'Science',
-                    icon: Icons.science,
-                    imageUrl: 'https://cdn-icons-png.flaticon.com/512/2331/2331837.png',
-                    color: Colors.green.shade300,
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const ScienceTutorialScreen()));
-                    },
-                  ),
-                ),
-                const Spacer(),
-              ],
-            ),
-          ),
-        ],
+        ),
+        centerTitle: false,
       ),
-    ),
-  );
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SubjectCard(
+                      title: 'Mathematics',
+                      icon: Icons.calculate,
+                      imageUrl: 'https://cdn-icons-png.flaticon.com/512/1974/1974717.png',
+                      color: themePrimary,
+                      backgroundColor: Colors.white,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const MathGameScreen()),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: SubjectCard(
+                      title: 'English',
+                      icon: Icons.menu_book,
+                      imageUrl: 'https://cdn-icons-png.flaticon.com/512/2965/2965567.png',
+                      color: themePrimary,
+                      backgroundColor: Colors.white,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const EnglishReadingScreen()),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SubjectCard(
+                      title: 'Science',
+                      icon: Icons.science,
+                      imageUrl: 'https://cdn-icons-png.flaticon.com/512/2331/2331837.png',
+                      color: themePrimary,
+                      backgroundColor: Colors.white,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => ScienceTutorialScreen()),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Empty box to match the layout above
+                  const Expanded(child: SizedBox()),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-}
-
+// ===================== Subject Card Widget =====================
 class SubjectCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final String imageUrl;
   final Color color;
+  final Color backgroundColor;
   final VoidCallback onTap;
 
   const SubjectCard({
@@ -85,34 +114,41 @@ class SubjectCard extends StatelessWidget {
     required this.icon,
     required this.imageUrl,
     required this.color,
+    this.backgroundColor = Colors.white,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
+    return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: color.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: themeAccent, width: 2),
+          boxShadow: const [
             BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 6,
-              offset: const Offset(0, 4),
-            )
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(2, 2),
+            ),
           ],
         ),
         padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.network(imageUrl, width: 80, height: 80),
-            const SizedBox(height: 12),
-            Text(title,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+            Image.network(imageUrl, height: 60),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(
+                fontFamily: 'AlfaSlabOne',
+                fontSize: 20,
+                color: themeAccent,
+              ),
+            ),
           ],
         ),
       ),
@@ -120,12 +156,12 @@ class SubjectCard extends StatelessWidget {
   }
 }
 
-
+// ===================== Math Game Screen =====================
 class MathGameScreen extends StatefulWidget {
-const MathGameScreen({super.key});
+  const MathGameScreen({super.key});
 
-@override
-State<MathGameScreen> createState() => _MathGameScreenState();
+  @override
+  State<MathGameScreen> createState() => _MathGameScreenState();
 }
 
 class _MathGameScreenState extends State<MathGameScreen> {
@@ -170,8 +206,15 @@ class _MathGameScreenState extends State<MathGameScreen> {
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialog(
-          title: const Text('Game Complete! 🎉'),
-          content: Text('You scored $stars stars in total.'),
+          backgroundColor: themeBackground,
+          title: Text(
+            'Game Complete! 🎉',
+            style: TextStyle(fontFamily: 'AlfaSlabOne', color: themeAccent),
+          ),
+          content: Text(
+            'You scored $stars stars in total.',
+            style: TextStyle(fontFamily: 'AlfaSlabOne', color: themeAccent),
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -180,7 +223,10 @@ class _MathGameScreenState extends State<MathGameScreen> {
                   _resetGame();
                 });
               },
-              child: const Text('Play Again'),
+              child: Text(
+                'Play Again',
+                style: TextStyle(fontFamily: 'AlfaSlabOne', color: themePrimary),
+              ),
             ),
           ],
         ),
@@ -202,11 +248,16 @@ class _MathGameScreenState extends State<MathGameScreen> {
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialog(
-          title: Text(isCorrect ? 'Correct! ⭐' : 'Try Again!'),
+          backgroundColor: themeBackground,
+          title: Text(
+            isCorrect ? 'Correct! ⭐' : 'Try Again!',
+            style: TextStyle(fontFamily: 'AlfaSlabOne', color: themeAccent),
+          ),
           content: Text(
             isCorrect
                 ? 'Great job! You earned ${(3 - wrongAttempts).clamp(1, 3)} stars!'
                 : 'The correct answer is $correctAnswer.',
+            style: TextStyle(fontFamily: 'AlfaSlabOne', color: themeAccent),
           ),
           actions: [
             TextButton(
@@ -222,7 +273,10 @@ class _MathGameScreenState extends State<MathGameScreen> {
                   }
                 });
               },
-              child: Text(isCorrect ? 'Next Question' : 'Try Again'),
+              child: Text(
+                isCorrect ? 'Next Question' : 'Try Again',
+                style: TextStyle(fontFamily: 'AlfaSlabOne', color: themePrimary),
+              ),
             ),
           ],
         ),
@@ -246,8 +300,13 @@ class _MathGameScreenState extends State<MathGameScreen> {
     final objectSymbol = activity['question'];
 
     return Scaffold(
+      backgroundColor: themeBackground,
       appBar: AppBar(
-        title: const Text('Math Game: Count the Objects'),
+        backgroundColor: themePrimary,
+        title: Text(
+          'Math Game: Count the Objects',
+          style: const TextStyle(fontFamily: 'AlfaSlabOne'),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
@@ -255,7 +314,10 @@ class _MathGameScreenState extends State<MathGameScreen> {
               children: [
                 const Icon(Icons.star, color: Colors.amber),
                 const SizedBox(width: 4),
-                Text('$stars', style: const TextStyle(fontSize: 18)),
+                Text(
+                  '$stars',
+                  style: const TextStyle(fontSize: 18, fontFamily: 'AlfaSlabOne'),
+                ),
               ],
             ),
           ),
@@ -267,11 +329,17 @@ class _MathGameScreenState extends State<MathGameScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              // Question & Objects
               Column(
                 children: [
                   Text(
                     'How many $objectSymbol are there?',
-                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'AlfaSlabOne',
+                      color: themeAccent,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 30),
@@ -285,6 +353,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
                   ),
                 ],
               ),
+              // Drag Target
               DragTarget<String>(
                 builder: (context, candidateData, rejectedData) {
                   return Container(
@@ -292,24 +361,35 @@ class _MathGameScreenState extends State<MathGameScreen> {
                     width: 200,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: droppedAnswer.isEmpty ? Colors.grey[300] : Colors.green[300],
+                      color: droppedAnswer.isEmpty ? const Color.fromARGB(255, 255, 255, 255) : Colors.green[300],
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.black38, width: 2),
+                      border: Border.all(color: themeAccent, width: 2),
                     ),
                     child: Text(
-                      droppedAnswer.isEmpty ? 'Drop Answer Here' : 'Answer: $droppedAnswer',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      droppedAnswer.isEmpty
+                          ? 'Drop Answer Here'
+                          : 'Answer: $droppedAnswer',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'AlfaSlabOne',
+                        color: themeAccent,
+                      ),
                     ),
                   );
                 },
                 onWillAcceptWithDetails: (_) => true,
                 onAcceptWithDetails: (details) => _handleAnswer(details.data, objectCount),
-
               ),
+              // Navigation Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: themePrimary,
+                      foregroundColor: Colors.white,
+                    ),
                     onPressed: currentIndex > 0
                         ? () {
                             setState(() {
@@ -319,9 +399,13 @@ class _MathGameScreenState extends State<MathGameScreen> {
                             });
                           }
                         : null,
-                    child: const Text('Previous'),
+                    child: const Text('Previous', style: TextStyle(fontFamily: 'AlfaSlabOne')),
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: themePrimary,
+                      foregroundColor: Colors.white,
+                    ),
                     onPressed: currentIndex < activities.length - 1
                         ? () {
                             setState(() {
@@ -331,15 +415,20 @@ class _MathGameScreenState extends State<MathGameScreen> {
                             });
                           }
                         : null,
-                    child: const Text('Next'),
+                    child: const Text('Next', style: TextStyle(fontFamily: 'AlfaSlabOne')),
                   ),
                 ],
               ),
+              // Number Options
               Column(
                 children: [
-                  const Text(
+                  Text(
                     'Drag the correct number:',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'AlfaSlabOne',
+                      color: themeAccent,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Wrap(
@@ -351,10 +440,10 @@ class _MathGameScreenState extends State<MathGameScreen> {
                         data: num,
                         feedback: Material(
                           color: Colors.transparent,
-                          child: _buildNumberBox(num, color: Colors.orange),
+                          child: _buildNumberBox(num, color: themePrimary),
                         ),
                         childWhenDragging: _buildNumberBox(num, color: Colors.grey),
-                        child: _buildNumberBox(num, color: Colors.orange.shade300),
+                        child: _buildNumberBox(num, color: themePrimary),
                       );
                     }).toList(),
                   ),
@@ -388,12 +477,14 @@ class _MathGameScreenState extends State<MathGameScreen> {
           fontSize: 36,
           fontWeight: FontWeight.bold,
           color: Colors.white,
+          fontFamily: 'AlfaSlabOne',
         ),
       ),
     );
   }
 }
 
+// ===================== English Reading Screen =====================
 class EnglishReadingScreen extends StatefulWidget {
   const EnglishReadingScreen({super.key});
 
@@ -442,13 +533,19 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
 
   void _goToPrevious() {
     if (currentPage > 0) {
-      _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
   void _goToNext() {
     if (currentPage < pages.length - 1) {
-      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -463,7 +560,7 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
           height: 10,
           width: isActive ? 24 : 12,
           decoration: BoxDecoration(
-            color: isActive ? Colors.blue : Colors.grey,
+            color: isActive ? themePrimary : Colors.grey[400],
             borderRadius: BorderRadius.circular(12),
           ),
         );
@@ -471,83 +568,102 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
     );
   }
 
- @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(title: const Text('Story Time: Milo the Little Cat')),
-    body: Column(
-      children: [
-        Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: pages.length,
-            onPageChanged: _onPageChanged,
-            itemBuilder: (context, index) {
-              final page = pages[index];
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 6,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.asset(
-                          page['image']!,
-                          fit: BoxFit.contain, // Tak potong gambar
-                          width: double.infinity,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Expanded(
-                      flex: 2,
-                      child: Center(
-                        child: SingleChildScrollView(
-                          child: Text(
-                            page['text']!,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            textAlign: TextAlign.center,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: themeBackground,
+      appBar: AppBar(
+        title: const Text(
+          'Story Time: Milo the Little Cat',
+          style: TextStyle(
+            fontFamily: 'AlfaSlabOne',
+            fontSize: 20,
+          ),
+        ),
+        backgroundColor: themePrimary,
+        foregroundColor: Colors.white,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: pages.length,
+              onPageChanged: _onPageChanged,
+              itemBuilder: (context, index) {
+                final page = pages[index];
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.asset(
+                            page['image']!,
+                            fit: BoxFit.contain,
+                            width: double.infinity,
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      Expanded(
+                        flex: 2,
+                        child: Center(
+                          child: SingleChildScrollView(
+                            child: Text(
+                              page['text']!,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontFamily: 'AlfaSlabOne',
+                                color: themeAccent,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildDotsIndicator(),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: currentPage == 0 ? null : _goToPrevious,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themePrimary,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Previous'),
                 ),
-              );
-            },
+                ElevatedButton(
+                  onPressed: currentPage == pages.length - 1 ? null : _goToNext,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themePrimary,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Next'),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        _buildDotsIndicator(),
-        const SizedBox(height: 12),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: currentPage == 0 ? null : _goToPrevious,
-                child: const Text('Previous'),
-              ),
-              ElevatedButton(
-                onPressed: currentPage == pages.length - 1 ? null : _goToNext,
-                child: const Text('Next'),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
-}
-
-
+// ===================== Science Tutorial Screen =====================
 class ScienceTutorialScreen extends StatelessWidget {
   const ScienceTutorialScreen({super.key});
 
@@ -564,8 +680,7 @@ class ScienceTutorialScreen extends StatelessWidget {
         'Leave both for 3–5 days.',
         'Observe and compare the results.',
       ],
-      'observation':
-          'The plant in the dark becomes yellow and weak. The plant in the light grows healthy and green.',
+      'observation': 'The plant in the dark becomes yellow and weak. The plant in the light grows healthy and green.',
       'discussion': [
         '💬 What is the difference between the two plants?',
         '💬 Why do plants need sunlight?',
@@ -583,8 +698,7 @@ class ScienceTutorialScreen extends StatelessWidget {
         'Optional: Smell Test (lemon, onion, soap).',
         'Optional: Sound Test (coin shake, clap, bell).',
       ],
-      'observation':
-          'Students use their sense of touch, smell, and hearing to identify objects.',
+      'observation': 'Students use their sense of touch, smell, and hearing to identify objects.',
       'discussion': [
         '💬 How did it feel when you couldn’t see?',
         '💬 Can you identify things using only touch or smell?',
@@ -601,8 +715,7 @@ class ScienceTutorialScreen extends StatelessWidget {
         'Let students touch each cup and guess the temperature.',
         'Safety Tips: Use closed containers. Warm water only.',
       ],
-      'observation':
-          'Students can feel the difference between cold, warm, and room temperature.',
+      'observation': 'Students can feel the difference between cold, warm, and room temperature.',
       'discussion': [
         '💬 Which one felt the coldest?',
         '💬 How can we feel temperature with our hands?',
@@ -615,15 +728,24 @@ class ScienceTutorialScreen extends StatelessWidget {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
-    } else {
-      debugPrint('Could not launch $url');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Science Experiments')),
+      backgroundColor: themeBackground,
+      appBar: AppBar(
+        title: const Text(
+          'Science Experiments',
+          style: TextStyle(
+            fontFamily: 'AlfaSlabOne',
+            fontSize: 20,
+          ),
+        ),
+        backgroundColor: themePrimary,
+        foregroundColor: Colors.white,
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: experiments.length,
@@ -631,8 +753,11 @@ class ScienceTutorialScreen extends StatelessWidget {
           final exp = experiments[index];
           return Card(
             margin: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             elevation: 4,
+            color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -649,27 +774,53 @@ class ScienceTutorialScreen extends StatelessWidget {
                       ),
                     ),
                   const SizedBox(height: 12),
-                  Text(exp['title'],
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text(
+                    exp['title'],
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'AlfaSlabOne',
+                      color: themeAccent,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(exp['subtitle'],
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  Text(
+                    exp['subtitle'],
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 8),
                   Text('🎯 Objective: ${exp['objective']}'),
                   const SizedBox(height: 8),
-                  const Text('🧪 Steps:',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    '🧪 Steps:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'AlfaSlabOne',
+                      color: themeAccent,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
                   ...List.generate((exp['steps'] as List).length, (i) {
                     return Text('• ${(exp['steps'] as List)[i]}');
                   }),
                   const SizedBox(height: 8),
-                  const Text('👀 Observation:',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    '👀 Observation:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'AlfaSlabOne',
+                      color: themeAccent,
+                    ),
+                  ),
                   Text(exp['observation']),
                   const SizedBox(height: 8),
-                  const Text('💬 Discussion Questions:',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    '💬 Discussion Questions:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'AlfaSlabOne',
+                      color: themeAccent,
+                    ),
+                  ),
                   ...List.generate((exp['discussion'] as List).length, (i) {
                     return Text((exp['discussion'] as List)[i]);
                   }),
@@ -678,8 +829,11 @@ class ScienceTutorialScreen extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: TextButton.icon(
                       onPressed: () => _launchURL(exp['videoUrl']),
-                      icon: const Icon(Icons.play_circle_fill),
-                      label: const Text('Watch Tutorial Video'),
+                      icon: Icon(Icons.play_circle_fill, color: themePrimary),
+                      label: Text(
+                        'Watch Tutorial Video',
+                        style: TextStyle(color: themePrimary),
+                      ),
                     ),
                   ),
                 ],

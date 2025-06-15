@@ -5,39 +5,58 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const Text(
-              'Your Notifications',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: const [
-                  ListTile(
-                    leading: Icon(Icons.info, color: Colors.deepOrange),
-                    title: Text('Welcome to Study Buddy!'),
-                    subtitle: Text('Thank you for joining us.'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.event, color: Colors.deepOrange),
-                    title: Text('Upcoming Lesson Reminder'),
-                    subtitle: Text('Don\'t forget your math lesson tomorrow at 10 AM.'),
-                  ),
-                  // You can add more notification items here
-                ],
-              ),
-            ),
-          ],
+      title: Text(
+        'Notifications',
+        style: textTheme.titleLarge?.copyWith(
+        color: Colors.white,
+        fontSize: 22,
         ),
       ),
+      backgroundColor: theme.appBarTheme.backgroundColor,
+      iconTheme: theme.appBarTheme.iconTheme,
+      ),
+      body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+        const SizedBox(height: 20),
+        Expanded(
+          child: ListView(
+          children: [
+            ListTile(
+            leading: Icon(Icons.info, color: theme.colorScheme.primary),
+            title: Text(
+              'Welcome to Study Buddy!',
+              style: textTheme.titleMedium,
+            ),
+            subtitle: Text(
+              'Thank you for joining us.',
+              style: textTheme.bodyMedium,
+            ),
+            ),
+            ListTile(
+            leading: Icon(Icons.event, color: theme.colorScheme.primary),
+            title: Text(
+              'Upcoming Lesson Reminder',
+              style: textTheme.titleMedium,
+            ),
+            subtitle: Text(
+              'Don\'t forget your math lesson tomorrow at 10 AM.',
+              style: textTheme.bodyMedium,
+            ),
+            ),
+            // You can add more notification items here
+          ],
+          ),
+        ),
+        ],
+      ),
+      ),
     );
+    }
   }
-}

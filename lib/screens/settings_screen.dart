@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
   final String username;
-  final ValueChanged<ThemeMode> onThemeModeChanged;
-  final ThemeMode currentThemeMode;
+  final bool isDarkMode;
+  final ValueChanged<bool> onDarkModeChanged;
   final String currentLanguage;
   final ValueChanged<String> onLanguageChanged;
 
   const SettingsScreen({
     super.key,
     required this.username,
-    required this.currentThemeMode,
-    required this.onThemeModeChanged,
+    required this.isDarkMode,
+    required this.onDarkModeChanged,
     required this.currentLanguage,
-    required this.onLanguageChanged,
+    required this.onLanguageChanged, required ThemeMode currentThemeMode, required void Function(dynamic mode) onThemeModeChanged,
   });
 
   @override
@@ -21,8 +21,13 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  static final Color themePrimary = Colors.deepOrangeAccent;
+  static final Color themeBackground = const Color(0xFFFFF5E1); // light cream
+  static final Color themeAccent = const Color(0xFF8B4513); // brown tone
+  static const String fontFamily = 'AlfaSlabOne';
+
   late String _selectedLanguage;
-  late ThemeMode _selectedThemeMode;
+  late bool _isDarkMode;
   String _username = '';
   String _languageLabel(String langCode) => langCode == 'ms' ? 'Bahasa Melayu' : 'English';
 
@@ -30,30 +35,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     _selectedLanguage = widget.currentLanguage;
-    _selectedThemeMode = widget.currentThemeMode;
+    _isDarkMode = widget.isDarkMode;
     _username = widget.username;
   }
+
+  bool get isDarkMode => _isDarkMode;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: isDarkMode ? Colors.black : themeBackground,
       appBar: AppBar(
-        title: Text(_selectedLanguage == 'ms' ? 'Tetapan' : 'Settings'),
-        backgroundColor: Colors.orange,
+        title: Text(
+          _selectedLanguage == 'ms' ? 'Tetapan' : 'Settings',
+          style: const TextStyle(
+            fontFamily: fontFamily,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: themePrimary,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // Language Switcher
           ListTile(
-            leading: const Icon(Icons.language),
-            title: Text(_selectedLanguage == 'ms' ? 'Bahasa' : 'Language'),
-            subtitle: Text(_languageLabel(_selectedLanguage)),
+            leading: Icon(Icons.language, color: themeAccent),
+            title: Text(
+              _selectedLanguage == 'ms' ? 'Bahasa' : 'Language',
+              style: const TextStyle(fontFamily: fontFamily),
+            ),
+            subtitle: Text(
+              _languageLabel(_selectedLanguage),
+              style: const TextStyle(fontFamily: fontFamily),
+            ),
             trailing: DropdownButton<String>(
               value: _selectedLanguage,
+              style: const TextStyle(fontFamily: fontFamily, color: Colors.black),
               items: const [
-                DropdownMenuItem(value: 'en', child: Text('English')),
-                DropdownMenuItem(value: 'ms', child: Text('Bahasa Melayu')),
+                DropdownMenuItem(value: 'en', child: Text('English', style: TextStyle(fontFamily: fontFamily))),
+                DropdownMenuItem(value: 'ms', child: Text('Bahasa Melayu', style: TextStyle(fontFamily: fontFamily))),
               ],
               onChanged: (value) {
                 if (value != null) {
@@ -68,31 +90,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const Divider(),
 
-          // Theme Mode
-          ListTile(
-            leading: const Icon(Icons.brightness_6),
-            title: Text(_selectedLanguage == 'ms' ? 'Mod Tema' : 'Theme Mode'),
-            subtitle: Column(
-              children: ThemeMode.values.map((mode) {
-                return RadioListTile<ThemeMode>(
-                  title: Text(mode == ThemeMode.system
-                      ? (_selectedLanguage == 'ms' ? 'Ikut Sistem' : 'System Default')
-                      : mode == ThemeMode.dark
-                          ? (_selectedLanguage == 'ms' ? 'Mod Gelap' : 'Dark Mode')
-                          : (_selectedLanguage == 'ms' ? 'Mod Cerah' : 'Light Mode')),
-                  value: mode,
-                  groupValue: _selectedThemeMode,
-                  onChanged: (ThemeMode? value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedThemeMode = value;
-                      });
-                      widget.onThemeModeChanged(value);
-                    }
-                  },
-                );
-              }).toList(),
+          // Dark Mode Toggle
+          SwitchListTile(
+            secondary: Icon(Icons.brightness_6, color: themeAccent),
+            title: Text(
+              _selectedLanguage == 'ms' ? 'Mod Gelap' : 'Dark Mode',
+              style: const TextStyle(fontFamily: fontFamily),
             ),
+            value: isDarkMode,
+            activeColor: themePrimary,
+            onChanged: (bool value) {
+              setState(() {
+                _isDarkMode = value;
+              });
+              widget.onDarkModeChanged(value);
+            },
           ),
 
           const Divider(),
@@ -102,10 +114,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             leading: const CircleAvatar(
               backgroundImage: AssetImage('assets/default_avatar.png'), // Replace with user image
             ),
-            title: Text(_selectedLanguage == 'ms' ? 'Akaun Pengguna' : 'User Account'),
-            subtitle: Text(_username),
+            title: Text(
+              _selectedLanguage == 'ms' ? 'Akaun Pengguna' : 'User Account',
+              style: const TextStyle(fontFamily: fontFamily),
+            ),
+            subtitle: Text(
+              _username,
+              style: const TextStyle(fontFamily: fontFamily),
+            ),
             trailing: IconButton(
-              icon: const Icon(Icons.edit),
+              icon: Icon(Icons.edit, color: themeAccent),
               onPressed: () {
                 _showUsernameDialog();
               },
@@ -115,9 +133,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 20),
 
           ElevatedButton.icon(
-            icon: const Icon(Icons.logout),
-            label: Text(_selectedLanguage == 'ms' ? 'Log Keluar' : 'Log Out'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            icon: const Icon(Icons.logout, color: Colors.white),
+            label: Text(
+              _selectedLanguage == 'ms' ? 'Log Keluar' : 'Log Out',
+              style: const TextStyle(fontFamily: fontFamily, color: Colors.white),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: themePrimary,
+              foregroundColor: Colors.white,
+              textStyle: const TextStyle(fontFamily: fontFamily),
+            ),
             onPressed: () {
               // Implement logout logic
             },
@@ -127,7 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             icon: const Icon(Icons.delete_forever, color: Colors.red),
             label: Text(
               _selectedLanguage == 'ms' ? 'Padam Akaun' : 'Delete Account',
-              style: const TextStyle(color: Colors.red),
+              style: const TextStyle(color: Colors.red, fontFamily: fontFamily),
             ),
             onPressed: () {
               // Implement account deletion logic
@@ -144,26 +169,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(_selectedLanguage == 'ms' ? 'Tukar Nama' : 'Change Name'),
+          backgroundColor: isDarkMode ? Colors.grey[900] : themeBackground,
+          title: Text(
+            _selectedLanguage == 'ms' ? 'Tukar Nama' : 'Change Name',
+            style: const TextStyle(fontFamily: fontFamily, color: Colors.black),
+          ),
           content: TextField(
             controller: controller,
             decoration: InputDecoration(
               labelText: _selectedLanguage == 'ms' ? 'Nama Baharu' : 'New Name',
+              labelStyle: const TextStyle(fontFamily: fontFamily),
             ),
+            style: const TextStyle(fontFamily: fontFamily),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(_selectedLanguage == 'ms' ? 'Batal' : 'Cancel'),
+              child: Text(
+                _selectedLanguage == 'ms' ? 'Batal' : 'Cancel',
+                style: const TextStyle(fontFamily: fontFamily),
+              ),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: themePrimary,
+                textStyle: const TextStyle(fontFamily: fontFamily),
+              ),
               onPressed: () {
                 setState(() {
                   _username = controller.text;
                 });
                 Navigator.pop(context);
               },
-              child: Text(_selectedLanguage == 'ms' ? 'Simpan' : 'Save'),
+              child: Text(
+                _selectedLanguage == 'ms' ? 'Simpan' : 'Save',
+                style: const TextStyle(fontFamily: fontFamily, color: Colors.white),
+              ),
             ),
           ],
         );

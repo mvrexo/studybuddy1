@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'edit_profile_screen.dart'; // Make sure this exists
 
+final Color themePrimary = Colors.deepOrangeAccent;
+final Color themeBackground = const Color(0xFFFFF5E1); // light cream
+final Color themeAccent = const Color(0xFF8B4513); // brown tone
+final String fontFamily = 'AlfaSlabOne';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, required String email});
 
@@ -9,34 +14,44 @@ class ProfileScreen extends StatelessWidget {
     double progress = 0.6; // Example progress value (60%)
 
     return Scaffold(
+      backgroundColor: themeBackground,
       appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: Colors.orange[200],
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const EditProfileScreen(initialData: {},)),
-              );
-            },
-          ),
-        ],
+      title: Text(
+        'Profile',
+        style: TextStyle(
+        fontFamily: fontFamily,
+        color: Colors.white,
+        ),
+      ),
+      backgroundColor: themePrimary, // Set to orange primary
+      actions: [
+        IconButton(
+        icon: const Icon(Icons.edit),
+        color: Colors.white,
+        onPressed: () {
+          Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const EditProfileScreen(initialData: {},)),
+          );
+        },
+        ),
+      ],
+      iconTheme: const IconThemeData(color: Colors.white), // Back icon is white
+      elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ListView(
-          children: [
-            // Avatar
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: const AssetImage('assets/budak.jpg'),
-                backgroundColor: Colors.orange[100],
-              ),
-            ),
-            const SizedBox(height: 20),
+      padding: const EdgeInsets.all(20),
+      child: ListView(
+        children: [
+        // Avatar
+        Center(
+          child: CircleAvatar(
+          radius: 50,
+          backgroundImage: const AssetImage('assets/budak.jpg'),
+          backgroundColor: themePrimary.withOpacity(0.2),
+          ),
+        ),
+        const SizedBox(height: 20),
 
             // Learning Progress
             _progressSection(progress),
@@ -82,15 +97,20 @@ class ProfileScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text(
+        Text(
           'Learning Progress',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.deepOrange),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: themePrimary,
+            fontFamily: fontFamily,
+          ),
         ),
         const SizedBox(height: 10),
         LinearProgressIndicator(
           value: progress,
-          backgroundColor: Colors.orange[100],
-          valueColor: const AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+          backgroundColor: themePrimary.withOpacity(0.1),
+          valueColor: AlwaysStoppedAnimation<Color>(themePrimary),
         ),
         const SizedBox(height: 10),
 
@@ -100,7 +120,7 @@ class ProfileScreen extends StatelessWidget {
           children: List.generate(5, (index) {
             return Icon(
               index < filledStars ? Icons.star : Icons.star_border,
-              color: Colors.deepOrangeAccent,
+              color: themePrimary,
               size: 28,
             );
           }),
@@ -108,7 +128,11 @@ class ProfileScreen extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           '${(progress * 100).toStringAsFixed(0)}% completed',
-          style: const TextStyle(color: Colors.brown, fontWeight: FontWeight.w500),
+          style: TextStyle(
+            color: themeAccent,
+            fontWeight: FontWeight.w500,
+            fontFamily: fontFamily,
+          ),
         ),
       ],
     );
@@ -118,22 +142,28 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.orange[50],
+        color: themeBackground,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.orange.shade100,
+            color: themePrimary.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 5),
           ),
         ],
+        border: Border.all(color: themePrimary.withOpacity(0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: themePrimary,
+              fontFamily: fontFamily,
+            ),
           ),
           const SizedBox(height: 10),
           ...items,
@@ -147,11 +177,26 @@ class ProfileScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          Icon(icon, color: Colors.orange),
+          Icon(icon, color: themePrimary),
           const SizedBox(width: 10),
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: fontFamily,
+              color: themeAccent,
+            ),
+          ),
           const SizedBox(width: 5),
-          Expanded(child: Text(value)),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontFamily: fontFamily,
+                color: themeAccent.withOpacity(0.8),
+              ),
+            ),
+          ),
         ],
       ),
     );

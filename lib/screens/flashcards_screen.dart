@@ -36,21 +36,15 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
   bool showAnswer = false;
   List<Map<String, dynamic>> selectedFlashcards = [];
 
-  final Color pastelPrimary = const Color.fromARGB(255, 153, 115, 166);
-  final Color pastelSecondary = const Color(0xFFFFF5E1);
-  final Color pastelButton = const Color(0xFF716488);
+  final Color themePrimary = Colors.deepOrangeAccent;
+  final Color themeBackground = const Color(0xFFFFF5E1); // light cream
+  final Color themeAccent = const Color(0xFF8B4513); // brown tone
 
-  final List<Color> pastelCardColors = [
-    const Color(0xFFFFF0F5), // LavenderBlush
-    const Color(0xFFFFE4E1), // MistyRose
-    const Color(0xFFFFFACD), // LemonChiffon
-    const Color(0xFFE0FFFF), // LightCyan
-    const Color(0xFFF0FFF0), // Honeydew
-    const Color(0xFFF5F5DC), // Beige
-  ];
+final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(255, 255, 255, 255));
+
 
   Color getRandomCardColor(int index) {
-    return pastelCardColors[index % pastelCardColors.length];
+    return cardColors[index % cardColors.length];
   }
 
   @override
@@ -82,12 +76,16 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
       appBar: AppBar(
         title: const Text(
           'Flashcards',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 22,
+            fontFamily: 'AlfaSlabOne',
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: pastelPrimary,
+        backgroundColor: themePrimary,
       ),
       body: Container(
-        color: pastelSecondary,
+        color: themeBackground,
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
@@ -103,10 +101,10 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   decoration: BoxDecoration(
                     color: getRandomCardColor(currentIndex),
                     borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: pastelPrimary, width: 3),
+                    border: Border.all(color: themePrimary, width: 3),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
+                        color: Colors.black26,
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -119,9 +117,9 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                       Text(
                         showAnswer ? currentCard['answer']! : currentCard['question']!,
                         style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          fontSize: 26,
+                          fontFamily: 'AlfaSlabOne',
+                          color: Colors.brown,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -140,14 +138,20 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: pastelButton,
+                          backgroundColor: themeAccent,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                         ),
-                        child: Text(showAnswer ? 'Show Question' : 'Show Answer'),
+                        child: Text(
+                          showAnswer ? 'Show Question' : 'Show Answer',
+                          style: const TextStyle(
+                            fontFamily: 'AlfaSlabOne',
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -164,13 +168,18 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   label: const Text('Previous'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: pastelPrimary,
-                    side: BorderSide(color: pastelPrimary),
+                    foregroundColor: themePrimary,
+                    side: BorderSide(color: themePrimary),
+                    textStyle: const TextStyle(fontFamily: 'AlfaSlabOne'),
                   ),
                 ),
                 Text(
                   '${currentIndex + 1} / ${selectedFlashcards.length}',
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'AlfaSlabOne',
+                  ),
                 ),
                 ElevatedButton.icon(
                   onPressed: nextCard,
@@ -178,8 +187,9 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   label: const Text('Next'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: pastelPrimary,
-                    side: BorderSide(color: pastelPrimary),
+                    foregroundColor: themePrimary,
+                    side: BorderSide(color: themePrimary),
+                    textStyle: const TextStyle(fontFamily: 'AlfaSlabOne'),
                   ),
                 ),
               ],

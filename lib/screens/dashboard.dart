@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studdybuddy1/screens/mind_map_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:studdybuddy1/screens/profile.dart';
@@ -14,7 +13,12 @@ import 'package:studdybuddy1/screens/lesson_planner_screen.dart';
 import 'package:studdybuddy1/screens/flashcards_screen.dart';
 import 'package:studdybuddy1/screens/quiz_page.dart';
 import 'package:studdybuddy1/screens/support_screen.dart';
-import 'package:studdybuddy1/screens/widgets/app_drawer.dart' hide SupportScreen;
+import 'package:studdybuddy1/screens/widgets/app_drawer.dart';
+
+const Color kThemePrimary = Colors.deepOrangeAccent;
+const Color kThemeBackground = Color(0xFFFFF5E1);
+const Color kThemeAccent = Color(0xFF8B4513);
+const String kFontFamily = 'AlfaSlabOne';
 
 class DashboardScreen extends StatefulWidget {
   final String email;
@@ -49,12 +53,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  // Pastel Theme Colors
-  final Color _pastelBackground = const Color(0xFFFDF6F0);
-  final Color _pastelPrimary = const Color.fromARGB(255, 221, 136, 71);
-  final Color _pastelSecondary = const Color.fromARGB(255, 235, 255, 209);
-  final Color _pastelText = const Color.fromARGB(255, 66, 63, 63);
-
   List<Map<String, Object?>> get learningModules => [
         {
           'title': 'Flashcards',
@@ -82,35 +80,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
           'icon': Icons.psychology,
           'route': const MindMapScreen()
         },
+        {
+          'title': 'Mini Games',
+          'icon': Icons.videogame_asset,
+          'route': const MiniGamesScreen(),
+        },
       ];
 
-List<Map<String, Object>> get appFeatures => [
-  {
-    'title': 'Accessibility',
-    'icon': Icons.accessibility_new,
-    'route': const AccessibilityScreen(),
-  },
-  {
-    'title': 'Settings',
-    'icon': Icons.settings,
-    'route': SettingsScreen(
-      username: 'User',
-      currentThemeMode: ThemeMode.system,
-      onThemeModeChanged: (ThemeMode value) {
-     
-      },
-      currentLanguage: 'en',
-      onLanguageChanged: (String value) {
-      
-      },
-    ),
-  },
-  {
-    'title': 'Support',
-    'icon': Icons.support_agent,
-    'route': const SupportScreen(),
-  },
-];
+  List<Map<String, Object>> get appFeatures => [
+        {
+          'title': 'Accessibility',
+          'icon': Icons.accessibility_new,
+          'route': const AccessibilityScreen(),
+        },
+        {
+          'title': 'Settings',
+          'icon': Icons.settings,
+          'route': SettingsScreen(
+            username: 'User',
+            currentThemeMode: ThemeMode.system,
+            onThemeModeChanged: (value) {},
+            currentLanguage: 'en',
+            onLanguageChanged: (String value) {},
+            isDarkMode: false,
+            onDarkModeChanged: (bool value) {},
+          ),
+        },
+      ];
+
   void _onBottomNavTap(int index) {
     setState(() {
       _selectedBottomIndex = index;
@@ -118,11 +115,6 @@ List<Map<String, Object>> get appFeatures => [
 
     if (index == 1) {
       _showFeedbackDialog(context);
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const CustomizeHomeScreen()),
-      );
     }
   }
 
@@ -207,24 +199,28 @@ List<Map<String, Object>> get appFeatures => [
   Widget _buildFeatureCard(Map<String, Object?> feature) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(18),
       child: InkWell(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(18),
         onTap: () => _handleFeatureTap(context, feature['route'] as Widget?),
         child: Container(
           width: 130,
+          height: 130,
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: _pastelPrimary.withOpacity(0.6), width: 2),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: kThemePrimary.withOpacity(0.7), width: 2),
             boxShadow: [
-              BoxShadow(color: _pastelPrimary.withOpacity(0.3), blurRadius: 6, offset: const Offset(2, 2)),
+              BoxShadow(
+                  color: kThemePrimary.withOpacity(0.18),
+                  blurRadius: 7,
+                  offset: const Offset(2, 2)),
             ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(feature['icon'] as IconData, size: 40, color: _pastelPrimary),
+              Icon(feature['icon'] as IconData, size: 44, color: kThemePrimary),
               const SizedBox(height: 10),
               Text(
                 feature['title'] as String,
@@ -232,7 +228,8 @@ List<Map<String, Object>> get appFeatures => [
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
-                  color: _pastelPrimary,
+                  color: kThemeAccent,
+                  fontFamily: kFontFamily,
                 ),
               ),
             ],
@@ -243,60 +240,85 @@ List<Map<String, Object>> get appFeatures => [
   }
 
   Widget buildModuleCard(Map<String, Object?> module) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => module['route'] as Widget),
-      );
-    },
-    child: Card(
-      color: _pastelPrimary,
-      child: SizedBox(
-        width: 120,
-        height: 120,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              module['icon'] as IconData,
-              size: 50,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              module['title'] as String,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => module['route'] as Widget),
+          );
+        },
+        child: Container(
+          width: 130,
+          height: 130,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: kThemePrimary.withOpacity(0.7), width: 2),
+            boxShadow: [
+              BoxShadow(
+                  color: kThemePrimary.withOpacity(0.18),
+                  blurRadius: 7,
+                  offset: const Offset(2, 2)),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                module['icon'] as IconData,
+                size: 44,
+                color: kThemePrimary,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+              const SizedBox(height: 10),
+              Text(
+                module['title'] as String,
+                style: TextStyle(
+                  color: kThemeAccent,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: kFontFamily,
+                  fontSize: 15,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-
-  Widget _buildSection(String title, List<Map<String, Object?>> items, {bool wrap = false}) {
+  Widget _buildSection(String title, List<Map<String, Object?>> items,
+      {bool wrap = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
             style: TextStyle(
-                fontSize: 22, fontWeight: FontWeight.bold, color: _pastelPrimary)),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: kThemePrimary,
+                fontFamily: kFontFamily)),
         const SizedBox(height: 14),
         wrap
-            ? Wrap(spacing: 16, runSpacing: 16, children: items.map(_buildFeatureCard).toList())
+            ? Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                children: items
+                    .map((item) => _buildFeatureCard(item))
+                    .toList(),
+              )
             : SizedBox(
-                height: 160,
+                height: 150,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: items.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 16),
-                  itemBuilder: (_, index) => _buildFeatureCard(items[index]),
+                  itemBuilder: (_, index) =>
+                      buildModuleCard(items[index]),
                 ),
               ),
         const SizedBox(height: 26),
@@ -307,11 +329,11 @@ List<Map<String, Object>> get appFeatures => [
   Widget _buildTableCalendar() {
     return Container(
       decoration: BoxDecoration(
-        color: _pastelSecondary.withOpacity(0.5),
+        color: kThemePrimary.withOpacity(0.08),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: _pastelPrimary.withOpacity(0.3),
+            color: kThemePrimary.withOpacity(0.13),
             blurRadius: 8,
             offset: const Offset(2, 4),
           ),
@@ -331,33 +353,38 @@ List<Map<String, Object>> get appFeatures => [
         },
         calendarStyle: CalendarStyle(
           todayDecoration: BoxDecoration(
-            color: _pastelPrimary,
+            color: kThemePrimary,
             shape: BoxShape.circle,
           ),
           selectedDecoration: BoxDecoration(
-            color: _pastelPrimary.withOpacity(0.7),
+            color: kThemePrimary.withOpacity(0.7),
             shape: BoxShape.circle,
           ),
-          defaultTextStyle: TextStyle(color: _pastelText),
-          weekendTextStyle: TextStyle(color: _pastelPrimary),
-          todayTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          selectedTextStyle: const TextStyle(color: Colors.white),
+          defaultTextStyle: TextStyle(color: kThemeAccent, fontFamily: kFontFamily),
+          weekendTextStyle: TextStyle(color: kThemePrimary, fontFamily: kFontFamily),
+          todayTextStyle: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontFamily: kFontFamily),
+          selectedTextStyle: TextStyle(color: Colors.white, fontFamily: kFontFamily),
         ),
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
           titleTextStyle: TextStyle(
-            color: _pastelPrimary,
+            color: kThemePrimary,
             fontWeight: FontWeight.bold,
             fontSize: 18,
+            fontFamily: kFontFamily,
           ),
-          leftChevronIcon: Icon(Icons.chevron_left, color: _pastelPrimary),
-          rightChevronIcon: Icon(Icons.chevron_right, color: _pastelPrimary),
+          leftChevronIcon: Icon(Icons.chevron_left, color: kThemePrimary),
+          rightChevronIcon: Icon(Icons.chevron_right, color: kThemePrimary),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
-          weekdayStyle: TextStyle(color: _pastelPrimary, fontWeight: FontWeight.w600),
-          weekendStyle: TextStyle(color: _pastelPrimary.withOpacity(0.7)),
+          weekdayStyle: TextStyle(
+              color: kThemePrimary, fontWeight: FontWeight.w600, fontFamily: kFontFamily),
+          weekendStyle: TextStyle(
+              color: kThemePrimary.withOpacity(0.7), fontFamily: kFontFamily),
         ),
+        daysOfWeekHeight: 28,
       ),
     );
   }
@@ -366,29 +393,51 @@ List<Map<String, Object>> get appFeatures => [
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
-        backgroundColor: _pastelBackground,
+        backgroundColor: kThemeBackground,
         appBar: AppBar(
-          title: const Text('Dashboard'),
-          backgroundColor: _pastelPrimary,
+          title: Text('Dashboard',
+              style: TextStyle(
+                  fontFamily: kFontFamily, color: Colors.white, fontWeight: FontWeight.bold)),
+          backgroundColor: kThemePrimary,
           actions: [
+            IconButton(
+              tooltip: 'Support',
+              icon: const Icon(Icons.support_agent),
+              onPressed: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => const SupportScreen())),
+            ),
             IconButton(
               tooltip: 'Notifications',
               icon: const Icon(Icons.notifications),
-              onPressed: () =>
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen())),
+              onPressed: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => const NotificationsScreen())),
             ),
             IconButton(
               tooltip: 'Profile',
               icon: const Icon(Icons.person),
-              onPressed: () =>
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileScreen(email: widget.email))),
+              onPressed: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => ProfileScreen(email: widget.email))),
             ),
           ],
         ),
-        drawer: AppDrawer(email: widget.email),
+        drawer: AppDrawer(
+          email: widget.email,
+          extraItems: [
+            DrawerItem(
+              icon: Icons.videogame_asset,
+              title: 'Mini Games',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MiniGamesScreen()),
+                );
+              },
+            ),
+          ],
+        ),
         body: Stack(
           children: [
-            // Background blur + pastel overlay
             Positioned.fill(
               child: Image.asset(
                 'assets/cartoonbg.jpg',
@@ -399,11 +448,10 @@ List<Map<String, Object>> get appFeatures => [
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
                 child: Container(
-                  color: _pastelSecondary.withOpacity(0.4),
+                  color: kThemeBackground.withOpacity(0.4),
                 ),
               ),
             ),
-
             SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
               child: ConstrainedBox(
@@ -418,17 +466,14 @@ List<Map<String, Object>> get appFeatures => [
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
-                        color: _pastelPrimary,
+                        color: kThemePrimary,
+                        fontFamily: kFontFamily,
                       ),
                     ),
                     const SizedBox(height: 12),
-
-                    // Calendar widget
                     _buildTableCalendar(),
                     const SizedBox(height: 20),
-
                     _buildSection('All Modules', learningModules),
-
                     _buildSection('All Features', appFeatures, wrap: true),
                   ],
                 ),
@@ -438,13 +483,12 @@ List<Map<String, Object>> get appFeatures => [
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedBottomIndex,
-          selectedItemColor: _pastelPrimary,
-          unselectedItemColor: const Color.fromARGB(255, 77, 71, 71),
+          selectedItemColor: kThemePrimary,
+          unselectedItemColor: kThemeAccent,
           onTap: _onBottomNavTap,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.feedback), label: 'Feedback'),
-            BottomNavigationBarItem(icon: Icon(Icons.dashboard_customize), label: 'Customize'),
           ],
         ),
       );
@@ -452,122 +496,220 @@ List<Map<String, Object>> get appFeatures => [
   }
 }
 
-class CustomizeHomeScreen extends StatefulWidget {
-  const CustomizeHomeScreen({super.key});
+class DrawerItem {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
 
-  @override
-  State<CustomizeHomeScreen> createState() => _CustomizeHomeScreenState();
+  DrawerItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
 }
 
-class _CustomizeHomeScreenState extends State<CustomizeHomeScreen> {
-  Map<String, bool> moduleVisibility = {
-    'Flashcards': true,
-    'Quiz': true,
-    'Learning Lessons': true,
-    'Lesson Planner': true,
-    'Progress Tracker': true,
-    'Mini Games': true,
-  };
+class MiniGamesScreen extends StatefulWidget {
+  const MiniGamesScreen({super.key});
 
-  final Map<String, Color> backgroundColors = {
-    'White': Colors.white,
-    'Light Blue': Colors.lightBlue.shade100,
-    'Light Green': Colors.lightGreen.shade100,
-    'Cream': const Color(0xFFFFFDD0),
-    'Light Grey': Colors.grey.shade200,
-  };
+  @override
+  State<MiniGamesScreen> createState() => _MiniGamesScreenState();
+}
 
-  String selectedBackgroundColor = 'White';
+class _MiniGamesScreenState extends State<MiniGamesScreen> {
+  final List<List<String>> solution = [
+    ['A', 'P', 'P', 'L', 'E'],
+    ['', '', '', 'R', ''],
+    ['G', 'R', 'A', 'P', 'E'],
+    ['B', '', '', '', ''],
+    ['A', 'N', 'A', 'N', 'A'],
+  ];
+
+  late List<List<TextEditingController>> controllers;
+
+  final List<String> hintEmojis = [
+    '🍎', // Apple
+    '🍇', // Grape
+    '🍌', // Banana
+    '🍊', // Orange
+    '🍋', // Lemon
+  ];
+  
+  get hintImages => null;
 
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
-  }
-
-  Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      for (var key in moduleVisibility.keys) {
-        moduleVisibility[key] = prefs.getBool(key) ?? true;
-      }
-      selectedBackgroundColor = prefs.getString('backgroundColor') ?? 'White';
-    });
-  }
-
-  Future<void> _savePreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    for (var key in moduleVisibility.keys) {
-      await prefs.setBool(key, moduleVisibility[key]!);
-    }
-    await prefs.setString('backgroundColor', selectedBackgroundColor);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Preferences saved!")),
+    controllers = List.generate(
+      solution.length,
+      (i) => List.generate(
+        solution[i].length,
+        (j) => TextEditingController(),
+      ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColors[selectedBackgroundColor],
-      appBar: AppBar(
-        title: const Text('Customize Home'),
-        backgroundColor: Colors.deepOrange,
+  void dispose() {
+    for (var row in controllers) {
+      for (var c in row) {
+        c.dispose();
+      }
+    }
+    super.dispose();
+  }
+
+  bool checkSolution() {
+    for (int i = 0; i < solution.length; i++) {
+      for (int j = 0; j < solution[i].length; j++) {
+        if (solution[i][j] != '') {
+          if (controllers[i][j].text.toUpperCase() != solution[i][j]) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  Widget buildCell(int i, int j) {
+    if (solution[i][j] == '') {
+      return Container(width: 48, height: 48);
+    }
+    return Container(
+      margin: const EdgeInsets.all(2),
+      width: 48,
+      height: 48,
+      child: TextField(
+        controller: controllers[i][j],
+        maxLength: 1,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontFamily:  'AlfaSlabOne',
+          fontSize: 24,
+          color: kThemeAccent,
+          fontWeight: FontWeight.bold,
+        ),
+        decoration: InputDecoration(
+          counterText: '',
+          filled: true,
+          fillColor: kThemeBackground,
+          border: OutlineInputBorder(
+            borderSide: const BorderSide(color: kThemePrimary, width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        cursorColor: kThemePrimary,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Text(
-            'Hide/Show Modules:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    );
+  }
+
+  void showResultDialog(bool correct) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: kThemeBackground,
+        title: Text(
+          correct ? 'Great Job!' : 'Try Again!',
+          style: const TextStyle(
+            fontFamily: kFontFamily,
+            color: kThemePrimary,
+            fontWeight: FontWeight.bold,
           ),
-          const SizedBox(height: 12),
-          ...moduleVisibility.keys.map((module) {
-            return SwitchListTile(
-              title: Text(module),
-              value: moduleVisibility[module]!,
-              onChanged: (val) {
-                setState(() => moduleVisibility[module] = val);
-              },
-              activeColor: Colors.orange,
-            );
-          }),
-          const Divider(height: 30),
-          const Text(
-            'Background Themes:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          correct
+              ? 'You solved the crossword!'
+              : 'Some answers are incorrect. Keep trying!',
+          style: const TextStyle(
+            fontFamily: kFontFamily,
+            color: kThemeAccent,
           ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            children: backgroundColors.entries.map((entry) {
-              return ChoiceChip(
-                label: Text(entry.key),
-                selected: selectedBackgroundColor == entry.key,
-                onSelected: (selected) {
-                  if (selected) {
-                    setState(() => selectedBackgroundColor = entry.key);
-                  }
-                },
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 30),
-          ElevatedButton.icon(
-            onPressed: _savePreferences,
-            icon: const Icon(Icons.save),
-            label: const Text('Save Changes'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepOrange,
-              padding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'OK',
+              style: TextStyle(
+                fontFamily: kFontFamily,
+                color: kThemePrimary,
+              ),
             ),
           ),
         ],
       ),
     );
   }
-}
 
+
+
+  Widget buildHintImages() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        hintEmojis.length,
+        (index) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            hintEmojis[index],
+            style: const TextStyle(fontSize: 32),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: kThemeBackground,
+      appBar: AppBar(
+        backgroundColor: kThemePrimary,
+        title: const Text(
+          'Fruit Crossword',
+          style: TextStyle(
+            fontFamily: kFontFamily,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 16),
+          buildHintImages(),
+          const SizedBox(height: 24),
+          Table(
+            border: TableBorder.all(color: kThemeAccent, width: 2),
+            children: List.generate(
+              solution.length,
+              (i) => TableRow(
+                children: List.generate(
+                  solution[i].length,
+                  (j) => buildCell(i, j),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kThemePrimary,
+              foregroundColor: kThemeBackground,
+              textStyle: const TextStyle(
+                fontFamily: kFontFamily,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            onPressed: () {
+              bool correct = checkSolution();
+              showResultDialog(correct);
+            },
+            child: const Text('Check'),
+          ),
+        ],
+      ),
+    );
+  }
+}

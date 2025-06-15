@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:studdybuddy1/screens/dashboard.dart';
+import 'package:studdybuddy1/screens/mind_map_screen.dart';
 import 'package:studdybuddy1/screens/notifications_screen.dart';
 import 'package:studdybuddy1/screens/profile.dart';
 import 'package:studdybuddy1/screens/learning_lessons.dart';
@@ -11,26 +12,23 @@ import 'package:studdybuddy1/screens/login.dart';
 import 'package:studdybuddy1/screens/accessibility_screen.dart';
 import 'package:studdybuddy1/screens/flashcards_screen.dart';
 import 'package:studdybuddy1/screens/quiz_page.dart';
-// betulkan ikut laluan sebenar
 
+// Custom theme colors and font
+final Color themePrimary = Colors.deepOrangeAccent;
+final Color themeBackground = const Color(0xFFFFF5E1); // light cream
+final Color themeAccent = const Color(0xFF8B4513); // brown tone
+final String fontFamily = 'AlfaSlabOne';
 
-class SupportScreen extends StatelessWidget {
-  const SupportScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Support"), backgroundColor: const Color(0xFFEE9A4D)),
-      body: const Center(child: Text("Support page coming soon...")),
-    );
-  }
-}
 
 class AppDrawer extends StatefulWidget {
   final bool showNotificationButton;
   final String? currentEmail;
 
-  const AppDrawer({super.key, this.showNotificationButton = false, this.currentEmail, required String email});
+  const AppDrawer({
+    super.key,
+    this.showNotificationButton = false,
+    this.currentEmail, required String email, required List<DrawerItem> extraItems,
+  });
 
   @override
   State<AppDrawer> createState() => _AppDrawerState();
@@ -43,10 +41,6 @@ class _AppDrawerState extends State<AppDrawer> {
   bool isHoveringLearning = false;
   bool isHoveringFeatures = false;
 
-  final Color pastelPrimary = const Color(0xFFEE9A4D);
-  final Color pastelSecondary = const Color(0xFFFFF5E1);
-  final Color pastelHighlight = const Color(0xFFFFB74D);
-
   final String studentName = 'Amanda Sopeah';
   final String studentEmail = 'amandasopeah@studentmail.com';
   final String profileImage = 'assets/budak.jpg';
@@ -58,12 +52,12 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: pastelSecondary,
+        color: themeBackground,
         child: Column(
           children: [
             UserAccountsDrawerHeader(
               decoration: BoxDecoration(
-                color: pastelPrimary.withOpacity(0.8),
+                color: themePrimary.withOpacity(0.85),
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -79,17 +73,20 @@ class _AppDrawerState extends State<AppDrawer> {
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                  fontFamily: 'AlfaSlabOne',
                 ),
               ),
               accountEmail: Text(
                 studentEmail,
-                style: const TextStyle(color: Colors.white70),
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontFamily: 'AlfaSlabOne',
+                ),
               ),
               otherAccountsPictures: const [
                 Icon(Icons.bug_report, color: Colors.white54),
               ],
             ),
-
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -100,7 +97,6 @@ class _AppDrawerState extends State<AppDrawer> {
                       text: 'Notifications',
                       screen: const NotificationsScreen(),
                     ),
-
                   _buildDrawerItem(
                     icon: Icons.home,
                     text: 'Home',
@@ -109,17 +105,18 @@ class _AppDrawerState extends State<AppDrawer> {
                   _buildDrawerItem(
                     icon: Icons.person,
                     text: 'My Profile',
-                    screen: const ProfileScreen(email: ''),
+                    screen: ProfileScreen(email: widget.currentEmail ?? ''),
                   ),
-
                   _buildExpandableHeader(
                     icon: Icons.folder_open,
-                    text: 'Learning Modules',
+                    text: 'All Modules',
                     expanded: expandLearning,
                     isHovering: isHoveringLearning,
                     onTap: () => setState(() => expandLearning = !expandLearning),
                     onHover: (hovering) {
-                      if (kIsWeb || Theme.of(context).platform == TargetPlatform.windows || Theme.of(context).platform == TargetPlatform.macOS) {
+                      if (kIsWeb ||
+                          Theme.of(context).platform == TargetPlatform.windows ||
+                          Theme.of(context).platform == TargetPlatform.macOS) {
                         setState(() {
                           isHoveringLearning = hovering;
                           if (hovering) expandLearning = true;
@@ -133,8 +130,9 @@ class _AppDrawerState extends State<AppDrawer> {
                     _buildSubItem(text: 'Lesson Planner', screen: const LessonPlannerScreen()),
                     _buildSubItem(text: 'Progress Tracker', screen: const ProgressTrackerScreen()),
                     _buildSubItem(text: 'Learning Lessons', screen: const LearningLessonsScreen()),
+                    _buildSubItem(text: 'Mind Map', screen: const MindMapScreen()),
+                    _buildSubItem(text: 'Mini Games', screen: const MiniGamesScreen()),
                   ],
-
                   _buildExpandableHeader(
                     icon: Icons.folder_special,
                     text: 'All Features',
@@ -142,7 +140,9 @@ class _AppDrawerState extends State<AppDrawer> {
                     isHovering: isHoveringFeatures,
                     onTap: () => setState(() => expandFeatures = !expandFeatures),
                     onHover: (hovering) {
-                      if (kIsWeb || Theme.of(context).platform == TargetPlatform.windows || Theme.of(context).platform == TargetPlatform.macOS) {
+                      if (kIsWeb ||
+                          Theme.of(context).platform == TargetPlatform.windows ||
+                          Theme.of(context).platform == TargetPlatform.macOS) {
                         setState(() {
                           isHoveringFeatures = hovering;
                           if (hovering) expandFeatures = true;
@@ -152,7 +152,6 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                   if (expandFeatures) ...[
                     _buildSubItem(text: 'Accessibility', screen: const AccessibilityScreen()),
-                    _buildSubItem(text: 'Support', screen: const SupportScreen()),
                     _buildSubItem(
                       text: 'Settings',
                       screen: SettingsScreen(
@@ -161,26 +160,34 @@ class _AppDrawerState extends State<AppDrawer> {
                         onLanguageChanged: (lang) => setState(() => _language = lang),
                         currentThemeMode: _themeMode,
                         onThemeModeChanged: (mode) => setState(() => _themeMode = mode),
+                        isDarkMode: _themeMode == ThemeMode.dark,
+                        onDarkModeChanged: (bool value) {
+                          setState(() {
+                            _themeMode = value ? ThemeMode.dark : ThemeMode.light;
+                          });
+                        },
                       ),
                     ),
-                    _buildSubItem(
-                     text: 'Customize Homescreen',
-                     screen: const CustomizeHomeScreen(),
-              ),
+                    
                   ],
                 ],
               ),
             ),
-
             const Divider(color: Colors.orangeAccent),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text("Log Out", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                label: const Text(
+                  "Log Out",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'AlfaSlabOne',
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: pastelPrimary,
+                  backgroundColor: themePrimary,
                   minimumSize: const Size.fromHeight(48),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   elevation: 3,
@@ -194,18 +201,23 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Widget _buildDrawerItem({required IconData icon, required String text, required Widget screen}) {
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String text,
+    required Widget screen,
+  }) {
     final isSelected = selected == text;
     return Material(
-      color: isSelected ? pastelHighlight.withOpacity(0.3) : Colors.transparent,
+      color: isSelected ? themePrimary.withOpacity(0.15) : Colors.transparent,
       borderRadius: BorderRadius.circular(12),
       child: ListTile(
-        leading: Icon(icon, color: pastelPrimary),
+        leading: Icon(icon, color: themePrimary),
         title: Text(
           text,
           style: TextStyle(
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            color: isSelected ? pastelPrimary : Colors.black87,
+            color: isSelected ? themeAccent : Colors.black87,
+            fontFamily: 'AlfaSlabOne',
           ),
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -230,9 +242,19 @@ class _AppDrawerState extends State<AppDrawer> {
       onEnter: (_) => onHover(true),
       onExit: (_) => onHover(false),
       child: ListTile(
-        leading: Icon(icon, color: pastelPrimary),
-        title: Text(text, style: TextStyle(fontWeight: FontWeight.bold, color: pastelPrimary)),
-        trailing: Icon(expanded || isHovering ? Icons.expand_less : Icons.expand_more, color: pastelPrimary),
+        leading: Icon(icon, color: themePrimary),
+        title: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF8B4513),
+            fontFamily: 'AlfaSlabOne',
+          ),
+        ),
+        trailing: Icon(
+          expanded || isHovering ? Icons.expand_less : Icons.expand_more,
+          color: themePrimary,
+        ),
         onTap: onTap,
       ),
     );
@@ -242,7 +264,10 @@ class _AppDrawerState extends State<AppDrawer> {
     return Padding(
       padding: const EdgeInsets.only(left: 40.0),
       child: ListTile(
-        title: Text(text),
+        title: Text(
+          text,
+          style: const TextStyle(fontFamily: 'AlfaSlabOne'),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         onTap: () {
           Navigator.pop(context);

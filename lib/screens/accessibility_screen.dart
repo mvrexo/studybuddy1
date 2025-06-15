@@ -10,7 +10,6 @@ class AccessibilityScreen extends StatefulWidget {
 
 class _AccessibilityScreenState extends State<AccessibilityScreen> {
   bool dyslexiaMode = false;
-  bool highContrastMode = false;
   String selectedColorBlindMode = 'None';
 
   double fontSize = 17.0;
@@ -18,20 +17,20 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
   final List<String> dyslexiaFonts = ['Lexend', 'Atkinson Hyperlegible'];
   String selectedFont = 'Lexend';
 
-  TextStyle get baseTextStyle {
+  final String fontFamily = 'AlfaSlabOne';
+
+  TextStyle getBaseTextStyle(BuildContext context) {
+    final theme = Theme.of(context);
     if (!dyslexiaMode) {
-      return TextStyle(
+      return theme.textTheme.bodyMedium!.copyWith(
         fontSize: fontSize,
-        color: textColor,
-        letterSpacing: 0.5,
-        fontWeight: FontWeight.normal,
+        fontFamily: fontFamily,
       );
     }
-
     TextStyle style;
     switch (selectedFont) {
       case 'Atkinson Hyperlegible':
-        style = GoogleFonts.lexend(fontSize: fontSize);
+        style = GoogleFonts.atkinsonHyperlegible(fontSize: fontSize);
         break;
       case 'Lexend':
       default:
@@ -40,268 +39,151 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
     return style.copyWith(
       fontWeight: FontWeight.w600,
       letterSpacing: 1.1,
-      color: textColor,
+      color: theme.textTheme.bodyMedium?.color,
     );
   }
 
-  Color get backgroundColor {
-    return highContrastMode ? Colors.black : Colors.white;
+  // Color Blind Mode Functions
+  List<String> getColorBlindModes() => ['None', 'Protanopia', 'Deuteranopia', 'Tritanopia'];
+
+  void setColorBlindMode(String mode) {
+    setState(() {
+      selectedColorBlindMode = mode;
+    });
   }
 
-  Color get textColor {
-    return highContrastMode ? Colors.yellowAccent : Colors.black87;
-  }
-
-  Color get switchColor {
-    return highContrastMode ? Colors.amber : Colors.orange[300]!;
-  }
-
-  Color get dropdownColor {
-    return highContrastMode ? Colors.grey[900]! : Colors.white;
-  }
-
-  Color get iconColor {
-    return highContrastMode ? Colors.yellow : Colors.black;
-  }
-
-  ThemeData applyColorBlindFilter() {
-    final baseTheme = highContrastMode ? ThemeData.dark() : ThemeData.light();
-
+  // Returns a ColorFilter based on the selected color blind mode
+  ColorFilter? getColorBlindFilter() {
     switch (selectedColorBlindMode) {
       case 'Protanopia':
-        return baseTheme.copyWith(
-          colorScheme: baseTheme.colorScheme.copyWith(
-            primary: Colors.teal,
-            secondary: Colors.orange,
-          ),
-          scaffoldBackgroundColor: backgroundColor,
-          textTheme: baseTheme.textTheme.apply(
-            bodyColor: textColor,
-            displayColor: textColor,
-          ),
-          appBarTheme: baseTheme.appBarTheme.copyWith(
-            backgroundColor: highContrastMode ? Colors.black : Colors.orange[300],
-            iconTheme: IconThemeData(color: textColor),
-            titleTextStyle: baseTextStyle.copyWith(color: textColor),
-          ), checkboxTheme: CheckboxThemeData(
- fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.teal; }
- return null;
- }),
- ), radioTheme: RadioThemeData(
- fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.teal; }
- return null;
- }),
- ), switchTheme: SwitchThemeData(
- thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.teal; }
- return null;
- }),
- trackColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.teal; }
- return null;
- }),
- ),
-        );
+        // Red-weakness simulation
+        return const ColorFilter.matrix([
+          0.567, 0.433, 0, 0, 0,
+          0.558, 0.442, 0, 0, 0,
+          0, 0.242, 0.758, 0, 0,
+          0, 0, 0, 1, 0,
+        ]);
       case 'Deuteranopia':
-        return baseTheme.copyWith(
-          colorScheme: baseTheme.colorScheme.copyWith(
-            primary: Colors.indigo,
-            secondary: Colors.amber,
-          ),
-          scaffoldBackgroundColor: backgroundColor,
-          textTheme: baseTheme.textTheme.apply(
-            bodyColor: textColor,
-            displayColor: textColor,
-          ),
-          appBarTheme: baseTheme.appBarTheme.copyWith(
-            backgroundColor: highContrastMode ? Colors.black : Colors.orange[300],
-            iconTheme: IconThemeData(color: textColor),
-            titleTextStyle: baseTextStyle.copyWith(color: textColor),
-          ), checkboxTheme: CheckboxThemeData(
- fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.indigo; }
- return null;
- }),
- ), radioTheme: RadioThemeData(
- fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.indigo; }
- return null;
- }),
- ), switchTheme: SwitchThemeData(
- thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.indigo; }
- return null;
- }),
- trackColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.indigo; }
- return null;
- }),
- ),
-        );
+        // Green-weakness simulation
+        return const ColorFilter.matrix([
+          0.625, 0.375, 0, 0, 0,
+          0.7, 0.3, 0, 0, 0,
+          0, 0.3, 0.7, 0, 0,
+          0, 0, 0, 1, 0,
+        ]);
       case 'Tritanopia':
-        return baseTheme.copyWith(
-          colorScheme: baseTheme.colorScheme.copyWith(
-            primary: Colors.deepPurple,
-            secondary: Colors.greenAccent,
-          ),
-          scaffoldBackgroundColor: backgroundColor,
-          textTheme: baseTheme.textTheme.apply(
-            bodyColor: textColor,
-            displayColor: textColor,
-          ),
-          appBarTheme: baseTheme.appBarTheme.copyWith(
-            backgroundColor: highContrastMode ? Colors.black : Colors.orange[300],
-            iconTheme: IconThemeData(color: textColor),
-            titleTextStyle: baseTextStyle.copyWith(color: textColor),
-          ), checkboxTheme: CheckboxThemeData(
- fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.deepPurple; }
- return null;
- }),
- ), radioTheme: RadioThemeData(
- fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.deepPurple; }
- return null;
- }),
- ), switchTheme: SwitchThemeData(
- thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.deepPurple; }
- return null;
- }),
- trackColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
- if (states.contains(WidgetState.disabled)) { return null; }
- if (states.contains(WidgetState.selected)) { return Colors.deepPurple; }
- return null;
- }),
- ),
-        );
+        // Blue-weakness simulation
+        return const ColorFilter.matrix([
+          0.95, 0.05, 0, 0, 0,
+          0, 0.433, 0.567, 0, 0,
+          0, 0.475, 0.525, 0, 0,
+          0, 0, 0, 1, 0,
+        ]);
+      case 'None':
       default:
-        return baseTheme.copyWith(
-          scaffoldBackgroundColor: backgroundColor,
-          textTheme: baseTheme.textTheme.apply(
-            bodyColor: textColor,
-            displayColor: textColor,
-          ),
-          appBarTheme: baseTheme.appBarTheme.copyWith(
-            backgroundColor: highContrastMode ? Colors.black : Colors.orange[300],
-            iconTheme: IconThemeData(color: textColor),
-            titleTextStyle: baseTextStyle.copyWith(color: textColor),
-          ),
-        );
+        return null;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeData = applyColorBlindFilter();
+    final theme = Theme.of(context);
+    final baseTextStyle = getBaseTextStyle(context);
 
-    return Theme(
-      data: themeData,
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: AppBar(
-          title: Text("Accessibility Settings", style: baseTextStyle),
-          elevation: 0,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Accessibility",
+          style: const TextStyle(
+            color: Colors.white,
+            fontFamily: 'AlfaSlabOne',
+            fontSize: 22,
+          ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: DefaultTextStyle(
-            style: baseTextStyle,
-            child: ListView(
-              children: [
-                SwitchListTile(
-                  title: Text("Dyslexia Friendly-Mode",
-                      style: baseTextStyle.copyWith(fontWeight: FontWeight.bold)),
-                  value: dyslexiaMode,
-                  onChanged: (val) {
-                    setState(() {
-                      dyslexiaMode = val;
-                      selectedFont = 'Lexend'; // reset font when toggle
-                    });
-                  },
-                  activeColor: switchColor,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: DefaultTextStyle(
+          style: baseTextStyle,
+          child: ListView(
+            children: [
+              SwitchListTile(
+                title: Text(
+                  "Dyslexia Friendly-Mode",
+                  style: baseTextStyle.copyWith(fontWeight: FontWeight.bold),
                 ),
-                if (dyslexiaMode)
-                  DropdownButton<String>(
-                    value: selectedFont,
-                    dropdownColor: dropdownColor,
-                    iconEnabledColor: iconColor,
-                    items: dyslexiaFonts.map((font) {
-                      return DropdownMenuItem(
-                        value: font,
-                        child: Text(font, style: TextStyle(color: textColor)),
-                      );
-                    }).toList(),
-                    onChanged: (val) {
-                      if (val != null) {
-                        setState(() => selectedFont = val);
-                      }
-                    },
-                  ),
-                const SizedBox(height: 16),
-                Text("Text Size",
-                    style: baseTextStyle.copyWith(fontWeight: FontWeight.bold)),
-                Slider(
-                  min: 12,
-                  max: 24,
-                  value: fontSize,
-                  label: "${fontSize.toInt()}",
-                  divisions: 6,
-                  onChanged: (val) {
-                    setState(() => fontSize = val);
-                  },
-                  activeColor: switchColor,
-                ),
-                const SizedBox(height: 16),
-                SwitchListTile(
-                  title: Text("High Contrast Mode",
-                      style: baseTextStyle.copyWith(fontWeight: FontWeight.bold)),
-                  value: highContrastMode,
-                  onChanged: (val) {
-                    setState(() => highContrastMode = val);
-                  },
-                  activeColor: switchColor,
-                ),
-                const SizedBox(height: 16),
-                Text("Color Blind Mode",
-                    style: baseTextStyle.copyWith(fontWeight: FontWeight.bold)),
+                value: dyslexiaMode,
+                onChanged: (val) {
+                  setState(() {
+                    dyslexiaMode = val;
+                    selectedFont = 'Lexend';
+                  });
+                },
+                activeColor: theme.colorScheme.secondary,
+              ),
+              if (dyslexiaMode)
                 DropdownButton<String>(
-                  value: selectedColorBlindMode,
-                  dropdownColor: dropdownColor,
-                  iconEnabledColor: iconColor,
-                  items: ['None', 'Protanopia', 'Deuteranopia', 'Tritanopia']
-                      .map((type) {
+                  value: selectedFont,
+                  items: dyslexiaFonts.map((font) {
                     return DropdownMenuItem(
-                      value: type,
-                      child: Text(type, style: TextStyle(color: textColor)),
+                      value: font,
+                      child: Text(font, style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
                     );
                   }).toList(),
                   onChanged: (val) {
-                    if (val != null) setState(() => selectedColorBlindMode = val);
+                    if (val != null) {
+                      setState(() => selectedFont = val);
+                    }
                   },
                 ),
-                const SizedBox(height: 24),
-                Text("Sample Text",
-                    style: baseTextStyle.copyWith(
-                        fontWeight: FontWeight.bold, fontSize: fontSize + 3)),
-                const SizedBox(height: 10),
-                Text("The quick brown fox jumps over the lazy dog.",
-                    style: baseTextStyle),
-              ],
-            ),
+              const SizedBox(height: 16),
+              Text(
+                "Text Size",
+                style: baseTextStyle.copyWith(fontWeight: FontWeight.bold),
+              ),
+              Slider(
+                min: 12,
+                max: 24,
+                value: fontSize,
+                label: "${fontSize.toInt()}",
+                divisions: 6,
+                onChanged: (val) {
+                  setState(() => fontSize = val);
+                },
+                activeColor: theme.colorScheme.secondary,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Color Blind Mode",
+                style: baseTextStyle.copyWith(fontWeight: FontWeight.bold),
+              ),
+              DropdownButton<String>(
+                value: selectedColorBlindMode,
+                items: getColorBlindModes().map((type) {
+                  return DropdownMenuItem(
+                    value: type,
+                    child: Text(type, style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  if (val != null) setColorBlindMode(val);
+                },
+              ),
+              const SizedBox(height: 24),
+              Text(
+                "Sample Text",
+                style: baseTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: fontSize + 3,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "The quick brown fox jumps over the lazy dog.",
+                style: baseTextStyle,
+              ),
+            ],
           ),
         ),
       ),
