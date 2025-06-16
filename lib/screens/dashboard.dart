@@ -573,7 +573,7 @@ class _MiniGamesScreenState extends State<MiniGamesScreen> {
 
   Widget buildCell(int i, int j) {
     if (solution[i][j] == '') {
-      return Container(width: 48, height: 48);
+      return SizedBox(width: 48, height: 48);
     }
     return Container(
       margin: const EdgeInsets.all(2),
