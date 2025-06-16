@@ -209,6 +209,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 22,
           ),
         ),
         leading: IconButton(
@@ -237,13 +238,13 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
                   color: Colors.orange.shade50,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Row(
+                child: const Row(
                   children: [
-                    const Icon(Icons.flag, color: Colors.deepOrange),
-                    const SizedBox(width: 12),
+                    Icon(Icons.flag, color: Colors.deepOrange),
+                    SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           'Daily Goal: 60 min',
                           style: TextStyle(fontSize: 14),

@@ -91,9 +91,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
+                      const Text(
                         'Enter your email to receive a new password.',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'AlfaSlabOne',
                           color: Color.fromARGB(255, 71, 42, 32),

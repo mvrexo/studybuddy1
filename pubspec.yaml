@@ -101,6 +101,8 @@ flutter:
     - assets/super.jpg
     - assets/read.jpg
     - assets/good.jpg
+    - assets/gajah.png
+
 
     # Video
     - assets/huruf.mp4

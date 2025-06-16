@@ -4,6 +4,11 @@ import 'package:screenshot/screenshot.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+// THEME COLORS
+final Color themePrimary = Colors.deepOrangeAccent;
+final Color themeBackground = const Color(0xFFFFF5E1);
+final Color themeAccent = const Color(0xFF8B4513);
+
 class MindMapScreen extends StatefulWidget {
   const MindMapScreen({super.key});
   @override
@@ -23,11 +28,12 @@ class Node {
   Node(this.label,
       {this.shape = 'rectangle',
       this.icon = Icons.circle,
-      this.color = Colors.pinkAccent,
+      Color? color,
       this.facts = const [],
       this.imageAsset,
       this.position = const Offset(0, 0)})
-      : children = [];
+      : color = color ?? themePrimary,
+        children = [];
 }
 
 class _MindMapScreenState extends State<MindMapScreen> {
@@ -36,11 +42,11 @@ class _MindMapScreenState extends State<MindMapScreen> {
 
   // Predefined colors to pick
   final List<Color> availableColors = [
-    Colors.pinkAccent,
-    Colors.lightGreenAccent,
-    Colors.deepPurple,
-    Colors.lightBlue,
-    Colors.amber,
+    themePrimary,
+    Colors.orangeAccent,
+    Colors.brown[200]!,
+    Colors.amber[300]!,
+    themeAccent,
   ];
 
   // Predefined image assets for selection
@@ -61,82 +67,82 @@ class _MindMapScreenState extends State<MindMapScreen> {
     _initializeMindMap();
   }
 
-  void _initializeMindMap() {
-    animalRoot = Node("Animals",
+ void _initializeMindMap() {
+  animalRoot = Node("Animal",
+      shape: 'rectangle',
+      color: Colors.orangeAccent,
+      imageAsset: 'assets/animal.jpg',
+      position: const Offset(450, 30)); // naikkan juga posisi root
+
+  double spacing = 150; // dikurangkan supaya lebih padat
+  double startX = 50;
+  double y = 180; // dinaikkan supaya tidak tutup butang bawah
+
+  animalRoot.children.addAll([
+    Node("Fish",
         shape: 'rectangle',
-        color: Colors.lightGreenAccent,
-        imageAsset: 'assets/animal.jpg',
-        position: Offset(620, 50));
-
-    double spacing = 220;
-    double startX = 50;
-    double y = 250;
-
-    animalRoot.children.addAll([
-      Node("Fish",
-          shape: 'rectangle',
-          color: Colors.deepPurple[200]!,
-          imageAsset: 'assets/fish.jpg',
-          position: Offset(startX + spacing * 0, y),
-          facts: [
-            "Breathe underwater using gills",
-            "Have scales and fins",
-            "Cold-blooded",
-            "Lay eggs"
-          ]),
-      Node("Birds",
-          shape: 'rectangle',
-          color: Colors.lightBlue[200]!,
-          imageAsset: 'assets/bird.jpg',
-          position: Offset(startX + spacing * 1, y),
-          facts: ["Lay eggs", "Have feathers & wings", "Warm-blooded"]),
-      Node("Reptiles",
-          shape: 'rectangle',
-          color: Colors.amber[300]!,
-          imageAsset: 'assets/reptiles.jpg',
-          position: Offset(startX + spacing * 2, y),
-          facts: [
-            "Cold-blooded",
-            "Usually lay eggs",
-            "Dry skin",
-            "Have scales"
-          ]),
-      Node("Amphibians",
-          shape: 'rectangle',
-          color: Colors.orange[200]!,
-          imageAsset: 'assets/frog.jpg',
-          position: Offset(startX + spacing * 3, y),
-          facts: [
-            "Live on land and in water",
-            "Cold-blooded",
-            "Lay eggs",
-            "Moist skin",
-            "Webbed feet"
-          ]),
-      Node("Mammals",
-          shape: 'rectangle',
-          color: Colors.red[300]!,
-          imageAsset: 'assets/mammal.jpg',
-          position: Offset(startX + spacing * 4, y),
-          facts: [
-            "Nurse young with milk",
-            "Have hair or fur",
-            "Warm-blooded",
-            "Give birth to young"
-          ]),
-      Node("Insects",
-          shape: 'rectangle',
-          color: Colors.yellow[300]!,
-          imageAsset: 'assets/insect.jpg',
-          position: Offset(startX + spacing * 5, y),
-          facts: [
-            "Have six legs",
-            "Usually have wings",
-            "Cold-blooded",
-            "Lay eggs"
-          ]),
-    ]);
-  }
+        color: const Color(0xFFB5EAD7), // pastel green
+        imageAsset: 'assets/fish.jpg',
+        position: Offset(startX + spacing * 0, y),
+        facts: [
+          "Breathe in water using gills",
+          "Have scales and fins",
+          "Cold-blooded",
+          "Lay eggs"
+        ]),
+    Node("Bird",
+        shape: 'rectangle',
+        color: const Color(0xFFFFDAC1), // pastel peach
+        imageAsset: 'assets/bird.jpg',
+        position: Offset(startX + spacing * 1, y),
+        facts: ["Lay eggs", "Have feathers & wings", "Warm-blooded"]),
+    Node("Reptile",
+        shape: 'rectangle',
+        color: const Color(0xFFFFB7B2), // pastel pink
+        imageAsset: 'assets/reptiles.jpg',
+        position: Offset(startX + spacing * 2, y),
+        facts: [
+          "Cold-blooded",
+          "Usually lay eggs",
+          "Dry skin",
+          "Have scales"
+        ]),
+    Node("Amphibian",
+        shape: 'rectangle',
+        color: const Color(0xFFA7C7E7), // pastel blue
+        imageAsset: 'assets/frog.jpg',
+        position: Offset(startX + spacing * 3, y),
+        facts: [
+          "Live on land and in water",
+          "Cold-blooded",
+          "Lay eggs",
+          "Moist skin",
+          "Webbed feet"
+        ]),
+    Node("Mammal",
+        shape: 'rectangle',
+        color: const Color(0xFFF7D6E0), // pastel lavender
+        imageAsset: 'assets/mammal.jpg',
+        position: Offset(startX + spacing * 4, y),
+        facts: [
+          "Feed their young with milk",
+          "Have fur or hair",
+          "Warm-blooded",
+          "Give birth to live young"
+        ]),
+    Node("Insect",
+        shape: 'rectangle',
+        color: const Color(0xFFFFF5BA), // pastel yellow
+        imageAsset: 'assets/insect.jpg',
+        position: Offset(startX + spacing * 5, y),
+        facts: [
+          "Have six legs",
+          "Usually have wings",
+          "Cold-blooded",
+          "Lay eggs"
+        ]),
+  ]);
+}
 
   void _editNode(Node node) async {
     final labelCtrl = TextEditingController(text: node.label);
@@ -149,7 +155,11 @@ class _MindMapScreenState extends State<MindMapScreen> {
       context: context,
       builder: (_) => StatefulBuilder(
         builder: (context, setStateDialog) => AlertDialog(
-          title: Text("Edit Node"),
+          backgroundColor: Colors.white,
+          title: Text("Edit Node",
+              style: const TextStyle(
+                  fontFamily: 'AlfaSlabOne',
+                  color: Colors.deepOrangeAccent)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -157,19 +167,23 @@ class _MindMapScreenState extends State<MindMapScreen> {
                 // Label
                 TextField(
                     controller: labelCtrl,
-                    decoration: InputDecoration(labelText: 'Label')),
-                SizedBox(height: 10),
+                    decoration: const InputDecoration(labelText: 'Label'),
+                    style: const TextStyle(fontFamily: 'AlfaSlabOne')),
+                const SizedBox(height: 10),
                 // Shape selector
                 Row(
                   children: [
-                    Text("Shape: "),
-                    SizedBox(width: 10),
+                    const Text("Shape: ",
+                        style: TextStyle(fontFamily: 'AlfaSlabOne')),
+                    const SizedBox(width: 10),
                     DropdownButton<String>(
                       value: selectedShape,
                       items: ['rectangle', 'circle', 'round']
                           .map((shape) => DropdownMenuItem(
                                 value: shape,
-                                child: Text(shape),
+                                child: Text(shape,
+                                    style: const TextStyle(
+                                        fontFamily: 'AlfaSlabOne')),
                               ))
                           .toList(),
                       onChanged: (val) {
@@ -182,12 +196,13 @@ class _MindMapScreenState extends State<MindMapScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 // Color picker
                 Row(
                   children: [
-                    Text("Color: "),
-                    SizedBox(width: 10),
+                    const Text("Color: ",
+                        style: TextStyle(fontFamily: 'AlfaSlabOne')),
+                    const SizedBox(width: 10),
                     Wrap(
                       spacing: 8,
                       children: availableColors
@@ -205,7 +220,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
                                     shape: BoxShape.circle,
                                     border: selectedColor == color
                                         ? Border.all(
-                                            color: Colors.black, width: 2)
+                                            color: themeAccent, width: 2)
                                         : null,
                                   ),
                                 ),
@@ -214,22 +229,27 @@ class _MindMapScreenState extends State<MindMapScreen> {
                     )
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 // Image picker
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Image: "),
-                    SizedBox(width: 10),
+                    const Text("Image: ",
+                        style: TextStyle(fontFamily: 'AlfaSlabOne')),
+                    const SizedBox(width: 10),
                     DropdownButton<String?>(
                       value: selectedImage,
-                      hint: Text("None"),
+                      hint: const Text("None",
+                          style: TextStyle(fontFamily: 'AlfaSlabOne')),
                       items: [null, ...availableImages]
                           .map((img) => DropdownMenuItem<String?>(
                                 value: img,
-                                child: Text(img == null
-                                    ? "None"
-                                    : img.split('/').last),
+                                child: Text(
+                                    img == null
+                                        ? "None"
+                                        : img.split('/').last,
+                                    style: const TextStyle(
+                                        fontFamily: 'AlfaSlabOne')),
                               ))
                           .toList(),
                       onChanged: (val) {
@@ -240,13 +260,15 @@ class _MindMapScreenState extends State<MindMapScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                Divider(),
+                const SizedBox(height: 10),
+                const Divider(),
                 // Facts list
-                Align(
+                const Align(
                     alignment: Alignment.centerLeft,
                     child: Text("Facts:",
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'AlfaSlabOne'))),
                 ...node.facts
                     .asMap()
                     .entries
@@ -258,9 +280,11 @@ class _MindMapScreenState extends State<MindMapScreen> {
                               onChanged: (newVal) {
                                 node.facts[entry.key] = newVal;
                               },
+                              style: const TextStyle(
+                                  fontFamily: 'AlfaSlabOne', fontSize: 13),
                             )),
                             IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
+                              icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
                                 setStateDialog(() {
                                   node.facts.removeAt(entry.key);
@@ -268,21 +292,21 @@ class _MindMapScreenState extends State<MindMapScreen> {
                               },
                             )
                           ],
-                        ))
-                    ,
-                SizedBox(height: 10),
+                        )),
+                const SizedBox(height: 10),
                 // Add new fact
                 Row(
                   children: [
                     Expanded(
                       child: TextField(
                         controller: factCtrl,
-                        decoration:
-                            InputDecoration(labelText: 'Add new fact'),
+                        decoration: const InputDecoration(
+                            labelText: 'Add fact'),
+                        style: const TextStyle(fontFamily: 'AlfaSlabOne'),
                       ),
                     ),
                     IconButton(
-                        icon: Icon(Icons.add),
+                        icon: const Icon(Icons.add),
                         onPressed: () {
                           if (factCtrl.text.trim().isNotEmpty) {
                             setStateDialog(() {
@@ -305,7 +329,9 @@ class _MindMapScreenState extends State<MindMapScreen> {
                   });
                   Navigator.pop(context);
                 },
-                child: Text("Delete", style: TextStyle(color: Colors.red)),
+                child: const Text("Delete",
+                    style: TextStyle(
+                        color: Colors.red, fontFamily: 'AlfaSlabOne')),
               ),
             TextButton(
                 onPressed: () {
@@ -317,208 +343,230 @@ class _MindMapScreenState extends State<MindMapScreen> {
                   });
                   Navigator.pop(context);
                 },
-                child: Text("Save")),
+                child: const Text("Save",
+                    style: TextStyle(fontFamily: 'AlfaSlabOne'))),
           ],
         ),
       ),
     );
   }
 
- void _addNode() async {
-  final labelCtrl = TextEditingController(text: 'New Node');
-  final factCtrl = TextEditingController();
-  String selectedShape = 'round';
-  Color selectedColor = availableColors.first;
-  String? selectedImage;
+  void _addNode() async {
+    final labelCtrl = TextEditingController(text: 'New Node');
+    final factCtrl = TextEditingController();
+    String selectedShape = 'round';
+    Color selectedColor = availableColors.first;
+    String? selectedImage;
 
-  List<String> tempFacts = [];
+    List<String> tempFacts = [];
 
-  await showDialog(
-    context: context,
-    builder: (_) => StatefulBuilder(
-      builder: (context, setStateDialog) => AlertDialog(
-        title: Text("Add New Node"),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Label
-              TextField(
-                controller: labelCtrl,
-                decoration: InputDecoration(labelText: 'Label'),
-              ),
-              SizedBox(height: 10),
+    await showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (context, setStateDialog) => AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text("Add New Node",
+              style: TextStyle(
+                  fontFamily: 'AlfaSlabOne', color: Colors.deepOrangeAccent)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Label
+                TextField(
+                  controller: labelCtrl,
+                  decoration: const InputDecoration(labelText: 'Label'),
+                  style: const TextStyle(fontFamily: 'AlfaSlabOne'),
+                ),
+                const SizedBox(height: 10),
 
-              // Shape selector
-              Row(
-                children: [
-                  Text("Shape: "),
-                  SizedBox(width: 10),
-                  DropdownButton<String>(
-                    value: selectedShape,
-                    items: ['rectangle', 'circle', 'round']
-                        .map((shape) => DropdownMenuItem(
-                              value: shape,
-                              child: Text(shape),
-                            ))
-                        .toList(),
-                    onChanged: (val) {
-                      if (val != null) {
+                // Shape selector
+                Row(
+                  children: [
+                    const Text("Shape: ",
+                        style: TextStyle(fontFamily: 'AlfaSlabOne')),
+                    const SizedBox(width: 10),
+                    DropdownButton<String>(
+                      value: selectedShape,
+                      items: ['rectangle', 'circle', 'round']
+                          .map((shape) => DropdownMenuItem(
+                                value: shape,
+                                child: Text(shape,
+                                    style: const TextStyle(
+                                        fontFamily: 'AlfaSlabOne')),
+                              ))
+                          .toList(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          setStateDialog(() {
+                            selectedShape = val;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Color picker
+                Row(
+                  children: [
+                    const Text("Color: ",
+                        style: TextStyle(fontFamily: 'AlfaSlabOne')),
+                    const SizedBox(width: 10),
+                    Wrap(
+                      spacing: 8,
+                      children: availableColors
+                          .map((color) => GestureDetector(
+                                onTap: () {
+                                  setStateDialog(() {
+                                    selectedColor = color;
+                                  });
+                                },
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    shape: BoxShape.circle,
+                                    border: selectedColor == color
+                                        ? Border.all(
+                                            color: themeAccent, width: 2)
+                                        : null,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Image picker
+                Row(
+                  children: [
+                    const Text("Image: ",
+                        style: TextStyle(fontFamily: 'AlfaSlabOne')),
+                    const SizedBox(width: 10),
+                    DropdownButton<String?>(
+                      value: selectedImage,
+                      hint: const Text("None",
+                          style: TextStyle(fontFamily: 'AlfaSlabOne')),
+                      items: [null, ...availableImages]
+                          .map((img) => DropdownMenuItem<String?>(
+                                value: img,
+                                child: Text(
+                                    img == null
+                                        ? "None"
+                                        : img.split('/').last,
+                                    style: const TextStyle(
+                                        fontFamily: 'AlfaSlabOne')),
+                              ))
+                          .toList(),
+                      onChanged: (val) {
                         setStateDialog(() {
-                          selectedShape = val;
+                          selectedImage = val;
                         });
-                      }
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const Divider(),
 
-              // Color picker
-              Row(
-                children: [
-                  Text("Color: "),
-                  SizedBox(width: 10),
-                  Wrap(
-                    spacing: 8,
-                    children: availableColors
-                        .map((color) => GestureDetector(
-                              onTap: () {
+                // Facts section
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Facts:",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'AlfaSlabOne')),
+                ),
+                ...tempFacts
+                    .asMap()
+                    .entries
+                    .map((entry) => Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                initialValue: entry.value,
+                                onChanged: (newVal) {
+                                  tempFacts[entry.key] = newVal;
+                                },
+                                style: const TextStyle(
+                                    fontFamily: 'AlfaSlabOne', fontSize: 13),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
                                 setStateDialog(() {
-                                  selectedColor = color;
+                                  tempFacts.removeAt(entry.key);
                                 });
                               },
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  shape: BoxShape.circle,
-                                  border: selectedColor == color
-                                      ? Border.all(color: Colors.black, width: 2)
-                                      : null,
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  )
-                ],
-              ),
-              SizedBox(height: 10),
-
-              // Image picker
-              Row(
-                children: [
-                  Text("Image: "),
-                  SizedBox(width: 10),
-                  DropdownButton<String?>(
-                    value: selectedImage,
-                    hint: Text("None"),
-                    items: [null, ...availableImages]
-                        .map((img) => DropdownMenuItem<String?>(
-                              value: img,
-                              child: Text(img == null ? "None" : img.split('/').last),
-                            ))
-                        .toList(),
-                    onChanged: (val) {
-                      setStateDialog(() {
-                        selectedImage = val;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Divider(),
-
-              // Facts section
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Facts:",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              ...tempFacts
-                  .asMap()
-                  .entries
-                  .map((entry) => Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              initialValue: entry.value,
-                              onChanged: (newVal) {
-                                tempFacts[entry.key] = newVal;
-                              },
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              setStateDialog(() {
-                                tempFacts.removeAt(entry.key);
-                              });
-                            },
-                          )
-                        ],
-                      ))
-                  ,
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: factCtrl,
-                      decoration: InputDecoration(labelText: 'Add new fact'),
+                            )
+                          ],
+                        )),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: factCtrl,
+                        decoration: const InputDecoration(
+                            labelText: 'Add fact'),
+                        style: const TextStyle(fontFamily: 'AlfaSlabOne'),
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      if (factCtrl.text.trim().isNotEmpty) {
-                        setStateDialog(() {
-                          tempFacts.add(factCtrl.text.trim());
-                          factCtrl.clear();
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ],
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        if (factCtrl.text.trim().isNotEmpty) {
+                          setStateDialog(() {
+                            tempFacts.add(factCtrl.text.trim());
+                            factCtrl.clear();
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Cancel
+              },
+              child: const Text("Cancel",
+                  style: TextStyle(fontFamily: 'AlfaSlabOne')),
+            ),
+            TextButton(
+              onPressed: () {
+                final newNode = Node(
+                  labelCtrl.text.trim(),
+                  shape: selectedShape,
+                  color: selectedColor,
+                  imageAsset: selectedImage,
+                  facts: tempFacts,
+                  position: const Offset(100, 400),
+                );
+
+                setState(() {
+                  animalRoot.children.add(newNode);
+                });
+
+                Navigator.pop(context);
+              },
+              child: const Text("Add",
+                  style: TextStyle(fontFamily: 'AlfaSlabOne')),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Cancel
-            },
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              final newNode = Node(
-                labelCtrl.text.trim(),
-                shape: selectedShape,
-                color: selectedColor,
-                imageAsset: selectedImage,
-                facts: tempFacts,
-                position: Offset(100, 400),
-              );
-
-              setState(() {
-                animalRoot.children.add(newNode);
-              });
-
-              Navigator.pop(context);
-            },
-            child: Text("Add"),
-          ),
-        ],
       ),
-    ),
-  );
-}
-
-
+    );
+  }
 
   Future<void> _saveAsImage() async {
     final image = await _screenshotController.capture();
@@ -532,7 +580,8 @@ class _MindMapScreenState extends State<MindMapScreen> {
     if (image != null) {
       final pdf = pw.Document();
       final imageProvider = pw.MemoryImage(image);
-      pdf.addPage(pw.Page(build: (context) => pw.Center(child: pw.Image(imageProvider))));
+      pdf.addPage(
+          pw.Page(build: (context) => pw.Center(child: pw.Image(imageProvider))));
       await Printing.sharePdf(bytes: await pdf.save(), filename: 'mind_map.pdf');
     }
   }
@@ -543,10 +592,14 @@ class _MindMapScreenState extends State<MindMapScreen> {
     final nodeWidgets = nodes.map((node) => _buildDraggableNode(node)).toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: themeBackground,
       appBar: AppBar(
-        title: Text("Mind Map"),
-        backgroundColor: Colors.teal,
+        title: const Text("Mind Map",
+            style: TextStyle(
+                fontFamily: 'AlfaSlabOne', color: Colors.white, fontSize: 22)),
+        backgroundColor: themePrimary,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Stack(
         children: [
@@ -576,26 +629,30 @@ class _MindMapScreenState extends State<MindMapScreen> {
               children: [
                 FloatingActionButton(
                   heroTag: "btn_edit",
+                  backgroundColor: Colors.white,
                   onPressed: () => _editNode(animalRoot),
-                  child: Icon(Icons.edit),
+                  child: const Icon(Icons.edit, color: Colors.deepOrangeAccent),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 FloatingActionButton(
                   heroTag: "btn_add",
+                  backgroundColor: Colors.white,
                   onPressed: _addNode,
-                  child: Icon(Icons.add),
+                  child: const Icon(Icons.add, color: Colors.deepOrangeAccent),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 FloatingActionButton(
                   heroTag: "btn_image",
+                  backgroundColor: Colors.white,
                   onPressed: _saveAsImage,
-                  child: Icon(Icons.image),
+                  child: const Icon(Icons.image, color: Colors.deepOrangeAccent),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 FloatingActionButton(
                   heroTag: "btn_pdf",
+                  backgroundColor: Colors.white,
                   onPressed: _saveAsPdf,
-                  child: Icon(Icons.picture_as_pdf),
+                  child: const Icon(Icons.picture_as_pdf, color: Colors.deepOrangeAccent),
                 ),
               ],
             ),
@@ -618,7 +675,8 @@ class _MindMapScreenState extends State<MindMapScreen> {
         childWhenDragging: Opacity(opacity: 0.3, child: _nodeBox(node)),
         onDragEnd: (details) {
           setState(() {
-            final appBarHeight = AppBar().preferredSize.height + MediaQuery.of(context).padding.top;
+            final appBarHeight =
+                AppBar().preferredSize.height + MediaQuery.of(context).padding.top;
             node.position = Offset(details.offset.dx, details.offset.dy - appBarHeight);
           });
         },
@@ -637,9 +695,15 @@ class _MindMapScreenState extends State<MindMapScreen> {
         Row(
           children: [
             Icon(node.icon, color: node.color, size: 24),
-            SizedBox(width: 8),
-            Text(node.label,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(node.label,
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'AlfaSlabOne',
+                      color: Colors.black)),
+            )
           ],
         ),
         if (node.imageAsset != null)
@@ -651,7 +715,10 @@ class _MindMapScreenState extends State<MindMapScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 2),
             child: Text("• $fact",
-                style: TextStyle(fontSize: 12, color: Colors.grey[800])),
+                style: TextStyle(
+                    fontSize: 13,
+                    color: themeAccent,
+                    fontFamily: 'AlfaSlabOne')),
           )
       ],
     );
@@ -661,7 +728,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
     switch (node.shape) {
       case 'circle':
         decoration = BoxDecoration(
-          color: node.color.withOpacity(0.3),
+          color: node.color.withOpacity(0.25),
           border: Border.all(color: node.color, width: 2),
           shape: BoxShape.circle,
         );
@@ -672,9 +739,9 @@ class _MindMapScreenState extends State<MindMapScreen> {
         break;
       case 'round':
         decoration = BoxDecoration(
-          color: node.color.withOpacity(0.3),
+          color: node.color.withOpacity(0.22),
           border: Border.all(color: node.color, width: 2),
-          borderRadius: BorderRadius.circular(100), // big radius for roundish cloud shape
+          borderRadius: BorderRadius.circular(100),
         );
         content = Padding(
           padding: const EdgeInsets.all(16),
@@ -684,7 +751,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
       case 'rectangle':
       default:
         decoration = BoxDecoration(
-          color: node.color.withOpacity(0.3),
+          color: node.color.withOpacity(0.18),
           border: Border.all(color: node.color, width: 2),
           borderRadius: BorderRadius.circular(16),
         );
@@ -698,8 +765,8 @@ class _MindMapScreenState extends State<MindMapScreen> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
-        margin: EdgeInsets.all(8),
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.all(8),
         width: 250,
         decoration: decoration,
         child: content,
@@ -715,8 +782,8 @@ class DoodleArrowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black87
-      ..strokeWidth = 2
+      ..color = themeAccent
+      ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke;
 
     for (var child in root.children) {
@@ -747,5 +814,3 @@ class DoodleArrowPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
-
-

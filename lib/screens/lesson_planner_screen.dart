@@ -1,18 +1,21 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+final Color themePrimary = Colors.deepOrangeAccent;
+final Color themeBackground = const Color(0xFFFFF5E1);
+final Color themeAccent = const Color(0xFF8B4513);
+
 class LessonPlannerScreen extends StatefulWidget {
   const LessonPlannerScreen({super.key});
 
   @override
-  _LessonPlannerScreenState createState() => _LessonPlannerScreenState();
+  LessonPlannerScreenState createState() => LessonPlannerScreenState();
 }
 
-class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
+class LessonPlannerScreenState extends State<LessonPlannerScreen> {
   final Map<String, List<Map<String, dynamic>>> _tasksByDate = {};
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
@@ -110,7 +113,8 @@ class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
       return;
     }
     int total = _tasksByDate[key]!.length;
-    int completed = _tasksByDate[key]!.where((t) => t['completed'] == true).length;
+    int completed =
+        _tasksByDate[key]!.where((t) => t['completed'] == true).length;
     _goalProgress = total == 0 ? 0 : completed / total;
   }
 
@@ -135,102 +139,117 @@ class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lesson Planner'),
+        title: const Text(
+          'Lesson Planner',
+          style: TextStyle(
+            fontFamily: 'AlfaSlabOne',
+            color: Colors.white,
+          ),
+        ),
         centerTitle: false,
-        backgroundColor: const Color.fromARGB(255, 255, 191, 0),
+        backgroundColor: themePrimary,
         elevation: 4,
         actions: [
           IconButton(
-              tooltip: 'Show Reminder',
-              icon: const Icon(Icons.alarm),
-              onPressed: _showReminder)
+            tooltip: 'Show Reminder',
+            icon: const Icon(Icons.alarm, color: Colors.white),
+            onPressed: _showReminder,
+          )
         ],
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background image
           Image.asset(
             'assets/rocket.jpg',
             fit: BoxFit.cover,
           ),
-
-          // Blur effect
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
             child: Container(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withAlpha((0.2 * 255).toInt()),
             ),
           ),
-
-          // Main content
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Column(
                 children: [
-                  // Calendar card
                   Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
                     elevation: 6,
-                    color: Colors.white.withOpacity(0.85),
+                    color: themeBackground.withAlpha((0.9 * 255).toInt()),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: TableCalendar(
                         firstDay: DateTime.utc(2020, 1, 1),
                         lastDay: DateTime.utc(2100, 12, 31),
                         focusedDay: _focusedDay,
-                        selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+                        selectedDayPredicate: (day) =>
+                            isSameDay(day, _selectedDay),
                         onDaySelected: _onDaySelected,
                         calendarStyle: CalendarStyle(
                           todayDecoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 255, 191, 0),
+                            color: themePrimary,
                             shape: BoxShape.circle,
                           ),
                           selectedDecoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 255, 191, 0),
+                            color: themePrimary,
                             shape: BoxShape.circle,
                           ),
-                          markerDecoration: BoxDecoration(
+                          markerDecoration: const BoxDecoration(
                             color: Colors.green,
                             shape: BoxShape.circle,
                           ),
-                          weekendTextStyle:
-                              const TextStyle(color: Color.fromARGB(255, 0, 0, 0),),
-                          defaultTextStyle:
-                              const TextStyle(fontWeight: FontWeight.bold),
+                          weekendTextStyle: TextStyle(
+                              color: themeAccent, fontFamily: 'AlfaSlabOne'),
+                          defaultTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'AlfaSlabOne'),
                         ),
-                        headerStyle: const HeaderStyle(
+                        headerStyle: HeaderStyle(
                           formatButtonVisible: false,
                           titleCentered: true,
                           titleTextStyle: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
-                              color: Color.fromARGB(255, 0, 0, 0)),
-                          leftChevronIcon:
-                              Icon(Icons.chevron_left, color: Color.fromARGB(255, 255, 196, 19)),
-                          rightChevronIcon:
-                              Icon(Icons.chevron_right, color: Color.fromARGB(255, 255, 196, 19)),
+                              fontFamily: 'AlfaSlabOne',
+                              color: themeAccent),
+                          leftChevronIcon: Icon(Icons.chevron_left,
+                              color: themePrimary),
+                          rightChevronIcon: Icon(Icons.chevron_right,
+                              color: themePrimary),
+                        ),
+                        daysOfWeekStyle: DaysOfWeekStyle(
+                          weekdayStyle: TextStyle(
+                            fontFamily: 'AlfaSlabOne',
+                            fontWeight: FontWeight.bold,
+                            color: themeAccent,
+                            fontSize: 14,
+                          ),
+                          weekendStyle: TextStyle(
+                            fontFamily: 'AlfaSlabOne',
+                            fontWeight: FontWeight.bold,
+                            color: themeAccent,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Progress bar with label
                   Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14)),
                     elevation: 5,
-                    color: Colors.white.withOpacity(0.85),
+                    color: themeBackground.withOpacity(0.9),
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
                       child: Row(
                         children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 28),
+                          Icon(Icons.star, color: themePrimary, size: 28),
                           const SizedBox(width: 12),
                           Expanded(
                             child: ClipRRect(
@@ -238,7 +257,7 @@ class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
                               child: LinearProgressIndicator(
                                 value: _goalProgress,
                                 backgroundColor: Colors.grey.shade300,
-                                color: const Color.fromARGB(255, 255, 191, 0),
+                                color: themePrimary,
                                 minHeight: 18,
                               ),
                             ),
@@ -246,23 +265,24 @@ class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
                           const SizedBox(width: 12),
                           Text(
                             "${(_goalProgress * 100).toInt()}%",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              fontFamily: 'AlfaSlabOne',
+                              color: themeAccent,
+                            ),
                           )
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Tasks checklist card with scroll
                   Expanded(
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16)),
                       elevation: 6,
-                      color: Colors.white.withOpacity(0.85),
+                      color: themeBackground.withOpacity(0.9),
                       child: Padding(
                         padding: const EdgeInsets.all(12),
                         child: ListView.builder(
@@ -273,14 +293,17 @@ class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
                               title: Text(
                                 task['title'],
                                 style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w600),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'AlfaSlabOne',
+                                ),
                               ),
                               value: task['completed'] as bool,
                               onChanged: (val) {
                                 _toggleTaskCompleted(index);
                               },
                               controlAffinity: ListTileControlAffinity.leading,
-                              activeColor: const Color.fromARGB(255, 112, 255, 64),
+                              activeColor: Colors.green,
                             );
                           },
                         ),
