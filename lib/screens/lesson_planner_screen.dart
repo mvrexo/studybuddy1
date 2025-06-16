@@ -34,25 +34,18 @@ class _LessonPlannerScreenState extends State<LessonPlannerScreen> {
   Future<void> _loadTasks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedData = prefs.getString('lesson_tasks');
-    if (storedData != null) {
-      Map<String, dynamic> jsonData = jsonDecode(storedData);
-      _tasksByDate.clear();
-      jsonData.forEach((key, value) {
-        List<dynamic> list = value;
-        _tasksByDate[key] = list.map((e) {
-          return {
-            'title': e['title'],
-            'completed': e['completed'] ?? false,
-          };
-        }).toList();
-      });
-    } else {
-      String todayKey = _formatDate(_selectedDay);
-      _tasksByDate[todayKey] = _defaultTasks
-          .map((e) => {'title': e['title']!, 'completed': false})
-          .toList();
-    }
-    _calculateGoalProgress();
+    Map<String, dynamic> jsonData = jsonDecode(storedData!);
+    _tasksByDate.clear();
+    jsonData.forEach((key, value) {
+      List<dynamic> list = value;
+      _tasksByDate[key] = list.map((e) {
+        return {
+          'title': e['title'],
+          'completed': e['completed'] ?? false,
+        };
+      }).toList();
+    });
+      _calculateGoalProgress();
     setState(() {});
   }
 
