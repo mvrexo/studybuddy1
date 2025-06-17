@@ -29917,7 +29917,6 @@ ov:function ov(a,b){this.c=a
 this.a=b},
 J5:function J5(){var _=this
 _.d=0
-_.e=""
 _.r=_.f=$
 _.c=_.a=null},
 awz:function awz(a,b){this.a=a
@@ -109499,8 +109498,7 @@ o=A.aPg(!1,A.dn(B.mg,B.k,n,n),A.dn(B.mh,B.k,n,n),!0,o)
 return A.ce(n,A.aRL(p,28,new A.CH(A.bk(n,n,B.k,n,n,n,n,n,m,n,n,n,n,n,B.cd,n,n,!0,n,n,n,n,n,n,n,n),A.bk(n,n,A.a7(s,B.k.t()>>>16&255,B.k.t()>>>8&255,B.k.t()&255),n,n,n,n,n,m,n,n,n,n,n,n,n,n,!0,n,n,n,n,n,n,n,n)),i,g,o,h,new A.awx(this),new A.awy(this),t.z),B.p,n,n,new A.bm(l,n,n,k,j,n,B.T),n,n,n,B.cr,n,n,n)},
 J(a){return A.Ek(new A.awS(this))}}
 A.awz.prototype={
-$0(){var s=this.b[0]
-this.a.e=s[0].toUpperCase()+B.e.d9(s,1)},
+$0(){B.e.d9(this.b[0],1)},
 $S:0}
 A.awJ.prototype={
 $1(a){},
@@ -109593,7 +109591,7 @@ s=A.ky(0,A.fi("assets/cartoonbg.jpg",B.z,o,B.dd,o,o))
 $.a9()
 r=t.N
 q=t.X
-l=A.eg(B.aL,A.b([s,A.ky(0,A.BJ(A.ce(o,o,B.p,A.a7(102,B.a0.t()>>>16&255,B.a0.t()>>>8&255,B.a0.t()&255),o,o,o,o,o,o,o,o,o),new A.m2(7,7,o))),A.pK(new A.eG(new A.aa(0,1/0,b.d,1/0),A.bW(A.b([A.ai("Welcome, "+m.e+"!",o,o,o,A.bk(o,o,B.k,o,o,o,o,o,p,o,o,26,o,o,B.I,o,o,!0,o,o,o,o,o,o,o,o),o,o),B.cE,m.ace(),B.bF,m.acc("All Modules",A.b([A.a5(["title","Flashcards","icon",B.OP,"route",B.rh],r,q),A.a5(["title","Quiz","icon",B.rA,"route",B.Df],r,q),A.a5(["title","Learning Lessons","icon",B.ry,"route",B.t1],r,q),A.a5(["title","Lesson Planner","icon",B.Os,"route",B.t2],r,q),A.a5(["title","Progress Tracker","icon",B.ON,"route",B.Da],r,q),A.a5(["title","Mind Map","icon",B.OK,"route",B.z3],r,q),A.a5(["title","Mini Games","icon",B.OR,"route",B.z4],r,q)],t.CF)),m.QV("All Features",m.gatU(),!0)],l),B.bp,B.t,B.u),o),B.N6)],l),B.E,B.aC,o)
+l=A.eg(B.aL,A.b([s,A.ky(0,A.BJ(A.ce(o,o,B.p,A.a7(102,B.a0.t()>>>16&255,B.a0.t()>>>8&255,B.a0.t()&255),o,o,o,o,o,o,o,o,o),new A.m2(7,7,o))),A.pK(new A.eG(new A.aa(0,1/0,b.d,1/0),A.bW(A.b([A.ai("Welcome, Amanda Sopeah!",o,o,o,A.bk(o,o,B.k,o,o,o,o,o,p,o,o,26,o,o,B.I,o,o,!0,o,o,o,o,o,o,o,o),o,o),B.cE,m.ace(),B.bF,m.acc("All Modules",A.b([A.a5(["title","Flashcards","icon",B.OP,"route",B.rh],r,q),A.a5(["title","Quiz","icon",B.rA,"route",B.Df],r,q),A.a5(["title","Learning Lessons","icon",B.ry,"route",B.t1],r,q),A.a5(["title","Lesson Planner","icon",B.Os,"route",B.t2],r,q),A.a5(["title","Progress Tracker","icon",B.ON,"route",B.Da],r,q),A.a5(["title","Mind Map","icon",B.OK,"route",B.z3],r,q),A.a5(["title","Mini Games","icon",B.OR,"route",B.z4],r,q)],t.CF)),m.QV("All Features",m.gatU(),!0)],l),B.bp,B.t,B.u),o),B.N6)],l),B.E,B.aC,o)
 q=m.d
 return A.ef(n,B.a0,l,new A.BS(B.SJ,m.gam9(),q,B.k,B.K,o),new A.BE(o))},
 $S:595}
