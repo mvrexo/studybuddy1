@@ -242,7 +242,6 @@ class _MathGameScreenState extends State<MathGameScreen> {
 
     if (showingDialog) return;
 
-    showingDialog = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showDialog(
         context: context,
@@ -280,8 +279,13 @@ class _MathGameScreenState extends State<MathGameScreen> {
             ),
           ],
         ),
-      );
+      ).then((_) {
+        setState(() {
+          showingDialog = false;
+        });
+      });
     });
+    showingDialog = true;
 
     setState(() {
       droppedAnswer = data;
