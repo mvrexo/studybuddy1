@@ -27,6 +27,7 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
   ];
 
   double _goalProgress = 0.0;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -37,19 +38,27 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
   Future<void> _loadTasks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedData = prefs.getString('lesson_tasks');
-    Map<String, dynamic> jsonData = jsonDecode(storedData!);
     _tasksByDate.clear();
-    jsonData.forEach((key, value) {
-      List<dynamic> list = value;
-      _tasksByDate[key] = list.map((e) {
-        return {
-          'title': e['title'],
-          'completed': e['completed'] ?? false,
-        };
-      }).toList();
+    if (storedData != null && storedData.isNotEmpty) {
+      try {
+        Map<String, dynamic> jsonData = jsonDecode(storedData);
+        jsonData.forEach((key, value) {
+          List<dynamic> list = value;
+          _tasksByDate[key] = list.map((e) {
+            return {
+              'title': e['title'],
+              'completed': e['completed'] ?? false,
+            };
+          }).toList();
+        });
+      } catch (_) {
+        // ignore corrupt data
+      }
+    }
+    _calculateGoalProgress();
+    setState(() {
+      _loading = false;
     });
-      _calculateGoalProgress();
-    setState(() {});
   }
 
   Future<void> _saveTasks() async {
@@ -85,11 +94,11 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
       _tasksByDate[key]![index]['completed'] =
           !(_tasksByDate[key]![index]['completed'] as bool);
       _calculateGoalProgress();
-      _saveTasks();
-      if (_tasksByDate[key]!.every((task) => task['completed'] == true)) {
-        Future.delayed(Duration.zero, () => _showCongratsDialog());
-      }
     });
+    _saveTasks();
+    if (_tasksByDate[key]!.every((task) => task['completed'] == true)) {
+      _showCongratsDialog();
+    }
   }
 
   void _showReminder() {
@@ -173,145 +182,189 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Column(
-                children: [
-                  Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                    elevation: 6,
-                    color: themeBackground.withAlpha((0.9 * 255).toInt()),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TableCalendar(
-                        firstDay: DateTime.utc(2020, 1, 1),
-                        lastDay: DateTime.utc(2100, 12, 31),
-                        focusedDay: _focusedDay,
-                        selectedDayPredicate: (day) =>
-                            isSameDay(day, _selectedDay),
-                        onDaySelected: _onDaySelected,
-                        calendarStyle: CalendarStyle(
-                          todayDecoration: BoxDecoration(
-                            color: themePrimary,
-                            shape: BoxShape.circle,
-                          ),
-                          selectedDecoration: BoxDecoration(
-                            color: themePrimary,
-                            shape: BoxShape.circle,
-                          ),
-                          markerDecoration: const BoxDecoration(
-                            color: Colors.green,
-                            shape: BoxShape.circle,
-                          ),
-                          weekendTextStyle: TextStyle(
-                              color: themeAccent, fontFamily: 'AlfaSlabOne'),
-                          defaultTextStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'AlfaSlabOne'),
-                        ),
-                        headerStyle: HeaderStyle(
-                          formatButtonVisible: false,
-                          titleCentered: true,
-                          titleTextStyle: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'AlfaSlabOne',
-                              color: themeAccent),
-                          leftChevronIcon: Icon(Icons.chevron_left,
-                              color: themePrimary),
-                          rightChevronIcon: Icon(Icons.chevron_right,
-                              color: themePrimary),
-                        ),
-                        daysOfWeekStyle: DaysOfWeekStyle(
-                          weekdayStyle: TextStyle(
-                            fontFamily: 'AlfaSlabOne',
-                            fontWeight: FontWeight.bold,
-                            color: themeAccent,
-                            fontSize: 14,
-                          ),
-                          weekendStyle: TextStyle(
-                            fontFamily: 'AlfaSlabOne',
-                            fontWeight: FontWeight.bold,
-                            color: themeAccent,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14)),
-                    elevation: 5,
-                    color: themeBackground.withOpacity(0.9),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
-                      child: Row(
-                        children: [
-                          Icon(Icons.star, color: themePrimary, size: 28),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: LinearProgressIndicator(
-                                value: _goalProgress,
-                                backgroundColor: Colors.grey.shade300,
-                                color: themePrimary,
-                                minHeight: 18,
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                      children: [
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                          elevation: 6,
+                          color: themeBackground.withAlpha((0.9 * 255).toInt()),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: TableCalendar(
+                              firstDay: DateTime.utc(2020, 1, 1),
+                              lastDay: DateTime.utc(2100, 12, 31),
+                              focusedDay: _focusedDay,
+                              selectedDayPredicate: (day) =>
+                                  isSameDay(day, _selectedDay),
+                              onDaySelected: _onDaySelected,
+                              calendarStyle: CalendarStyle(
+                                todayDecoration: BoxDecoration(
+                                  color: themePrimary,
+                                  shape: BoxShape.circle,
+                                ),
+                                selectedDecoration: BoxDecoration(
+                                  color: themePrimary,
+                                  shape: BoxShape.circle,
+                                ),
+                                markerDecoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                ),
+                                weekendTextStyle: TextStyle(
+                                    color: themeAccent,
+                                    fontFamily: 'AlfaSlabOne'),
+                                defaultTextStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'AlfaSlabOne'),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            "${(_goalProgress * 100).toInt()}%",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              fontFamily: 'AlfaSlabOne',
-                              color: themeAccent,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                      elevation: 6,
-                      color: themeBackground.withOpacity(0.9),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: ListView.builder(
-                          itemCount: todayTasks.length,
-                          itemBuilder: (context, index) {
-                            final task = todayTasks[index];
-                            return CheckboxListTile(
-                              title: Text(
-                                task['title'],
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                              headerStyle: HeaderStyle(
+                                formatButtonVisible: false,
+                                titleCentered: true,
+                                titleTextStyle: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'AlfaSlabOne',
+                                    color: themeAccent),
+                                leftChevronIcon: Icon(Icons.chevron_left,
+                                    color: themePrimary),
+                                rightChevronIcon: Icon(Icons.chevron_right,
+                                    color: themePrimary),
+                              ),
+                              daysOfWeekStyle: DaysOfWeekStyle(
+                                weekdayStyle: TextStyle(
                                   fontFamily: 'AlfaSlabOne',
+                                  fontWeight: FontWeight.bold,
+                                  color: themeAccent,
+                                  fontSize: 14,
+                                ),
+                                weekendStyle: TextStyle(
+                                  fontFamily: 'AlfaSlabOne',
+                                  fontWeight: FontWeight.bold,
+                                  color: themeAccent,
+                                  fontSize: 14,
                                 ),
                               ),
-                              value: task['completed'] as bool,
-                              onChanged: (val) {
-                                _toggleTaskCompleted(index);
-                              },
-                              controlAffinity: ListTileControlAffinity.leading,
-                              activeColor: Colors.green,
-                            );
-                          },
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
+                          elevation: 5,
+                          color: themeBackground.withAlpha((0.9 * 255).toInt()),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
+                            child: Row(
+                              children: [
+                                Icon(Icons.star, color: themePrimary, size: 28),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: LinearProgressIndicator(
+                                      value: _goalProgress,
+                                      backgroundColor: Colors.grey.shade300,
+                                      color: themePrimary,
+                                      minHeight: 18,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  "${(_goalProgress * 100).toInt()}%",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    fontFamily: 'AlfaSlabOne',
+                                    color: themeAccent,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Expanded(
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16)),
+                            elevation: 6,
+                            color: themeBackground.withAlpha((0.9 * 255).toInt()),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: todayTasks.isEmpty
+                                  ? Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          "No tasks for this day.",
+                                          style: TextStyle(
+                                              fontFamily: 'AlfaSlabOne',
+                                              fontSize: 16),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        ElevatedButton.icon(
+                                          icon: const Icon(Icons.add_task),
+                                          label: const Text(
+                                            "Add Default Tasks",
+                                            style: TextStyle(
+                                                fontFamily: 'AlfaSlabOne'),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: themePrimary,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _tasksByDate[selectedKey] = _defaultTasks
+                                                  .map((e) => {
+                                                        'title': e['title']!,
+                                                        'completed': false
+                                                      })
+                                                  .toList();
+                                              _calculateGoalProgress();
+                                            });
+                                            _saveTasks();
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  : ListView.builder(
+                                      itemCount: todayTasks.length,
+                                      itemBuilder: (context, index) {
+                                        final task = todayTasks[index];
+                                        return CheckboxListTile(
+                                          title: Text(
+                                            task['title'],
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: 'AlfaSlabOne',
+                                            ),
+                                          ),
+                                          value: task['completed'] as bool,
+                                          onChanged: (val) {
+                                            _toggleTaskCompleted(index);
+                                          },
+                                          controlAffinity:
+                                              ListTileControlAffinity.leading,
+                                          activeColor: Colors.green,
+                                        );
+                                      },
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
           ),
         ],

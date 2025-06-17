@@ -50,7 +50,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
   }
 
   Widget _buildProgressCard(String label, int current, int total) {
-    double percent = current / total;
+    double percent = total == 0 ? 0 : current / total;
     percent = percent.clamp(0, 1);
 
     return Expanded(
@@ -215,7 +215,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).maybePop();
           },
         ),
       ),
@@ -238,20 +238,20 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
                   color: Colors.orange.shade50,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.flag, color: Colors.deepOrange),
-                    SizedBox(width: 12),
+                    const Icon(Icons.flag, color: Colors.deepOrange),
+                    const SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Daily Goal: 60 min',
-                          style: TextStyle(fontSize: 14),
+                          'Daily Goal: $dailyGoal min',
+                          style: const TextStyle(fontSize: 14),
                         ),
                         Text(
-                          'Weekly Goal: 420 min',
-                          style: TextStyle(fontSize: 14),
+                          'Weekly Goal: $weeklyGoal min',
+                          style: const TextStyle(fontSize: 14),
                         ),
                       ],
                     )
