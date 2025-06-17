@@ -59,13 +59,16 @@ class MiniGamesScreen extends StatelessWidget {
                 ),
                 _GameCard(
                   icon: Icons.science,
-                  title: 'Plant Diagram',
+                  title: 'Science Crossword',
                   color: Colors.green[200]!,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const ScienceLabelDiagramGame(),
+                        builder: (_) {
+                          const scienceCrosswordGame = const ScienceCrosswordGame();
+                          return scienceCrosswordGame;
+                        },
                       ),
                     );
                   },
@@ -137,27 +140,87 @@ class MathMatchGame extends StatefulWidget {
 }
 
 class _MathMatchGameState extends State<MathMatchGame> {
-  final List<Map<String, dynamic>> questions = [
-    {'question': '2 + 2', 'answer': '4'},
-    {'question': '2 + 1', 'answer': '3'},
-    {'question': '1 + 4', 'answer': '5'},
-    {'question': '3 + 4', 'answer': '7'},
+  final List<List<Map<String, String>>> levels = [
+    [
+      {'question': '2 + 2', 'answer': '4'},
+      {'question': '2 + 1', 'answer': '3'},
+      {'question': '1 + 4', 'answer': '5'},
+      {'question': '3 + 4', 'answer': '7'},
+    ],
+    [
+      {'question': '5 - 2', 'answer': '3'},
+      {'question': '4 + 4', 'answer': '8'},
+      {'question': '6 - 1', 'answer': '5'},
+      {'question': '5 + 2', 'answer': '7'},
+    ],
+    [
+      {'question': '2 x 3', 'answer': '6'},
+      {'question': '9 - 1', 'answer': '8'},
+      {'question': '10 + 5', 'answer': '15'},
+      {'question': '10 / 2', 'answer': '5'},
+    ]
   ];
 
-  final List<String> choices = ['5', '3', '7', '4'];
+  int currentLevel = 0;
+  late List<Map<String, String>> currentQuestions;
+  late List<String> choices;
 
-  final Map<String, String> matched = {};
-  final Map<String, bool> correct = {};
-  final Map<String, bool> attempted = {};
+  Map<String, String> matched = {};
+  Map<String, bool> correct = {};
+  Map<String, bool> attempted = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadLevel(currentLevel);
+  }
+
+  void loadLevel(int levelIndex) {
+    currentQuestions = levels[levelIndex];
+    choices = currentQuestions.map((q) => q['answer']!).toList()..shuffle();
+
+    matched = {};
+    correct = {};
+    attempted = {};
+    setState(() {});
+  }
+
+  bool isLevelComplete() {
+    return currentQuestions.every((q) =>
+        correct[q['question']] != null && correct[q['question']] == true);
+  }
+
+  void goToNextLevel() {
+    if (!isLevelComplete()) return;
+    if (currentLevel + 1 < levels.length) {
+      currentLevel++;
+      loadLevel(currentLevel);
+    } else {
+      // Game completed
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('🎉 Congratulations!'),
+          content: const Text('You completed all levels!'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kThemeBackground,
       appBar: AppBar(
-        title: const Text(
-          'Match Math',
-          style: TextStyle(
+        title: Text(
+          'Match Math - Level ${currentLevel + 1}',
+          style: const TextStyle(
             fontFamily: kFontFamily,
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -174,11 +237,12 @@ class _MathMatchGameState extends State<MathMatchGame> {
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: questions.map((q) {
-                final question = q['question'];
-                final answer = q['answer'];
+              children: currentQuestions.map((q) {
+                final question = q['question']!;
+                final answer = q['answer']!;
                 final isMatched = matched[question] != null;
                 final isCorrect = correct[question] == true;
+
                 Color boxColor;
                 Color borderColor;
                 if (isMatched) {
@@ -193,6 +257,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
                   boxColor = Colors.grey[200]!;
                   borderColor = Colors.grey;
                 }
+
                 return Column(
                   children: [
                     Container(
@@ -248,15 +313,17 @@ class _MathMatchGameState extends State<MathMatchGame> {
                           ),
                         );
                       },
-                      onWillAcceptWithDetails: (data) => matched[question] == null,
+                      onWillAcceptWithDetails: (data) =>
+                          matched[question] == null,
                       onAcceptWithDetails: (data) {
                         setState(() {
-                          matched[question] = data.data;
                           attempted[question] = true;
                           if (data.data == answer) {
+                            matched[question] = data.data;
                             correct[question] = true;
                           } else {
                             correct[question] = false;
+                            matched.remove(question); // Reset if wrong
                           }
                         });
                       },
@@ -294,21 +361,20 @@ class _MathMatchGameState extends State<MathMatchGame> {
               }).toList(),
             ),
             const Spacer(),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: SizedBox(
-                height: 36,
-                child: ElevatedButton.icon(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: kThemePrimary,
                     foregroundColor: Colors.white,
-                    minimumSize: const Size(10, 36),
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  icon: const Icon(Icons.arrow_back, size: 18),
+                  icon: const Icon(Icons.menu),
                   label: const Text(
                     'Menu',
                     style: TextStyle(
@@ -319,7 +385,29 @@ class _MathMatchGameState extends State<MathMatchGame> {
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
-              ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        isLevelComplete() ? Colors.green : Colors.grey,
+                    foregroundColor: Colors.white,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  icon: const Icon(Icons.arrow_forward),
+                  label: const Text(
+                    'Next Level',
+                    style: TextStyle(
+                      fontFamily: kFontFamily,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  onPressed: isLevelComplete() ? goToNextLevel : null,
+                ),
+              ],
             ),
             const SizedBox(height: 10),
           ],
@@ -360,233 +448,270 @@ class _MathMatchGameState extends State<MathMatchGame> {
   }
 }
 
-class ScienceLabelDiagramGame extends StatefulWidget {
-  const ScienceLabelDiagramGame({super.key});
+class ScienceCrosswordGame extends StatefulWidget {
+  const ScienceCrosswordGame({super.key});
 
   @override
-  State<ScienceLabelDiagramGame> createState() => _ScienceLabelDiagramGameState();
+  State<ScienceCrosswordGame> createState() => _ScienceCrosswordGameState();
 }
 
-class _ScienceLabelDiagramGameState extends State<ScienceLabelDiagramGame> {
-  // Positions for drop zones (adjust as needed for your diagram)
-  final Map<String, Offset> targetPositions = {
-    'Leaf': const Offset(170, 70),
-    'Stem': const Offset(110, 170),
-    'Root': const Offset(170, 260),
-  };
+class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
+  final List<Map<String, dynamic>> levels = [
+    {
+      'name': 'Animals',
+      'grid': [
+        [null, 'T', null, null],
+        ['L', 'I', 'O', 'N'],
+        [null, 'G', null, null],
+        [null, 'E', null, null],
+        [null, 'R', null, null],
+      ],
+      'cluesAcross': ['1. Across – King of the jungle'],
+      'cluesDown': ['1. Down – Big striped wild cat'],
+      'definitions': [
+        'LION – A powerful wild cat called the king of the jungle.',
+        'TIGER – A large cat with orange fur and black stripes.'
+      ]
+    },
+    {
+      'name': 'Plants',
+      'grid': [
+        [null, null, 'L', null],
+        ['T', 'R', 'E', 'E'],
+        [null, null, 'A', null],
+        [null, null, 'F', null],
+        [null, null, null, null],
+      ],
+      'cluesAcross': ['1. Across – Has leaves and a trunk'],
+      'cluesDown': ['1. Down – Makes food using sunlight'],
+      'definitions': [
+        'TREE – A tall plant with leaves and a trunk.',
+        'LEAF – Makes food through photosynthesis.'
+      ]
+    },
+    {
+      'name': 'Space',
+      'grid': [
+        ['E', 'A', 'R', 'T', 'H'],
+        [null, null, null, null, null],
+        [null, null, null, null, 'M'],
+        [null, null, 'S', null, 'O'],
+        [null, null, 'K', null, 'O'],
+        [null, null, 'Y', null, 'N'],
+      ],
+      'cluesAcross': ['1. Across – Our planet'],
+      'cluesDown': ['1. Down – Night sky object', '2. Down – Blue area above Earth'],
+      'definitions': [
+        'EARTH – Our home planet.',
+        'MOON – The natural satellite of Earth.',
+        'SKY – The space we see when we look up.'
+      ]
+    },
+  ];
 
-  final List<String> labels = ['Leaf', 'Stem', 'Root'];
-  final Map<String, String?> dropped = {}; // label -> dropped value
-  final Map<String, bool> correct = {}; // label -> is correct
+  int selectedLevelIndex = 0;
+  List<List<String>> userInput = [];
+  int hintCount = 0;
+  final int maxHints = 3;
 
   @override
   void initState() {
     super.initState();
-    for (var label in labels) {
-      dropped[label] = null;
-      correct[label] = false;
+    _resetGrid();
+  }
+
+  void _resetGrid() {
+    final grid = levels[selectedLevelIndex]['grid'] as List<List<String?>>;
+    userInput = List.generate(grid.length,
+        (r) => List.generate(grid[r].length, (_) => '', growable: false),
+        growable: false);
+    hintCount = 0;
+  }
+
+  void _useHint() {
+    final correctGrid = levels[selectedLevelIndex]['grid'] as List<List<String?>>;
+    for (int r = 0; r < correctGrid.length; r++) {
+      for (int c = 0; c < correctGrid[r].length; c++) {
+        final correct = correctGrid[r][c];
+        if (correct != null && userInput[r][c].toUpperCase() != correct.toUpperCase()) {
+          setState(() {
+            userInput[r][c] = correct;
+            hintCount++;
+          });
+          return;
+        }
+      }
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kThemeBackground,
-      appBar: AppBar(
-        backgroundColor: kThemePrimary,
-        title: const Text(
-          'Label the Diagram',
-          style: TextStyle(
-            fontFamily: kFontFamily,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        elevation: 0,
-      ),
-      body: Stack(
-        children: [
-          // Diagram image placeholder
-          Positioned.fill(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Image.asset(
-                'assets/plant_diagram.jpg',
-                fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => Container(
-                  color: Colors.grey[200],
-                  child: const Center(
-                    child: Text(
-                      'Diagram not found',
-                      style: TextStyle(
-                        fontFamily: kFontFamily,
-                        fontSize: 18,
-                        color: kThemeAccent,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Target label drop zones
-          ...targetPositions.entries.map((entry) {
-            final label = entry.key;
-            final droppedValue = dropped[label];
-            final isCorrect = correct[label] == true;
-            final isAttempted = droppedValue != null;
-            Color boxColor;
-            Color borderColor;
-            if (isAttempted) {
-              if (isCorrect) {
-                boxColor = Colors.green[300]!;
-                borderColor = Colors.green;
-              } else {
-                boxColor = Colors.red[300]!;
-                borderColor = Colors.red;
-              }
-            } else {
-              boxColor = Colors.white;
-              borderColor = Colors.black;
-            }
-            return Positioned(
-              left: entry.value.dx,
-              top: entry.value.dy,
-              child: DragTarget<String>(
-                builder: (context, candidateData, rejectedData) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 80,
-                    height: 30,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: boxColor,
-                      border: Border.all(
-                        color: borderColor,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      droppedValue ?? '',
-                      style: TextStyle(
-                        fontFamily: kFontFamily,
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
-                },
-                onWillAcceptWithDetails: (data) => dropped[label] == null,
-                onAcceptWithDetails: (data) {
-                  setState(() {
-                    dropped[label] = data.data;
-                    correct[label] = data.data == label;
-                  });
-                },
-              ),
-            );
-          }),
-          // Draggable labels at bottom
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 24,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: labels.map((label) {
-                // Only show labels that haven't been dropped
-                if (dropped.containsValue(label)) return const SizedBox(width: 80, height: 40);
-                return Draggable<String>(
-                  data: label,
-                  feedback: _buildLabel(label, true),
-                  childWhenDragging: _buildLabel(label, false),
-                  child: _buildLabel(label, true),
-                );
-              }).toList(),
-            ),
-          ),
-          // Score display
-          Positioned(
-            top: 16,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'Score: ${correct.values.where((v) => v).length}',
-                style: const TextStyle(
-                  fontFamily: kFontFamily,
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          // Back button
-          Positioned(
-            left: 16,
-            bottom: 24,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kThemePrimary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-              ),
-              icon: const Icon(Icons.arrow_back),
-              label: const Text(
-                'Back',
-                style: TextStyle(fontFamily: kFontFamily, fontWeight: FontWeight.bold),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
+  void _checkAnswers() {
+    final correctGrid = levels[selectedLevelIndex]['grid'] as List<List<String?>>;
+    int total = 0, correct = 0;
+
+    for (int r = 0; r < correctGrid.length; r++) {
+      for (int c = 0; c < correctGrid[r].length; c++) {
+        final correctChar = correctGrid[r][c];
+        if (correctChar != null) {
+          total++;
+          if (userInput[r][c].toUpperCase() == correctChar.toUpperCase()) {
+            correct++;
+          }
+        }
+      }
+    }
+
+    String message;
+    if (correct == total) {
+      message = '🎉 Great job! All correct!\n\n' +
+          (levels[selectedLevelIndex]['definitions'] as List<String>).join('\n');
+    } else if (correct == 0) {
+      message = '😕 All answers are wrong. Try again!';
+    } else {
+      message = '✅ $correct correct out of $total cells.';
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Results'),
+        content: Text(message),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
         ],
       ),
     );
   }
 
-  Widget _buildLabel(String text, bool visible) {
-    return Container(
-      width: 80,
-      height: 40,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: visible ? kThemePrimary : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.black),
-        boxShadow: visible
-            ? [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ]
-            : [],
+  @override
+  Widget build(BuildContext context) {
+    final level = levels[selectedLevelIndex];
+    final grid = level['grid'] as List<List<String?>>;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Science Crossword'),
+        actions: [
+          DropdownButton<int>(
+            value: selectedLevelIndex,
+            onChanged: (val) {
+              if (val != null) {
+                setState(() {
+                  selectedLevelIndex = val;
+                  _resetGrid();
+                });
+              }
+            },
+            items: List.generate(
+              levels.length,
+              (i) => DropdownMenuItem(value: i, child: Text(levels[i]['name'])),
+            ),
+          ),
+        ],
       ),
-      child: Text(
-        visible ? text : '',
-        style: const TextStyle(
-          fontFamily: kFontFamily,
-          fontSize: 14,
-          color: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            _buildGrid(grid),
+            const SizedBox(height: 16),
+            _buildClues(level),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.lightbulb),
+                  label: Text('Hint (${maxHints - hintCount})'),
+                  onPressed: hintCount < maxHints ? _useHint : null,
+                ),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.check),
+                  label: const Text('Check'),
+                  onPressed: _checkAnswers,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildGrid(List<List<String?>> grid) {
+    final rowCount = grid.length;
+    final colCount = grid[0].length;
+
+    return SizedBox(
+      width: colCount * 48,
+      height: rowCount * 48,
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: rowCount * colCount,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: colCount,
+        ),
+        itemBuilder: (context, index) {
+          final row = index ~/ colCount;
+          final col = index % colCount;
+          final correctLetter = grid[row][col];
+
+          return Container(
+            margin: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              color: correctLetter != null ? Colors.white : Colors.grey[300],
+              border: Border.all(color: Colors.black),
+            ),
+            child: correctLetter != null
+                ? Center(
+                    child: TextField(
+                      maxLength: 1,
+                      textAlign: TextAlign.center,
+                      decoration: const InputDecoration(counterText: '', border: InputBorder.none),
+                      onChanged: (val) {
+                        setState(() {
+                          userInput[row][col] = val.toUpperCase();
+                        });
+                      },
+                      controller: TextEditingController.fromValue(
+                        TextEditingValue(text: userInput[row][col]),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildClues(Map<String, dynamic> level) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("🡒 Across", style: TextStyle(fontWeight: FontWeight.bold)),
+              ...List<Widget>.from(
+                (level['cluesAcross'] as List<String>).map((c) => Text("• $c")),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("🡑 Down", style: TextStyle(fontWeight: FontWeight.bold)),
+              ...List<Widget>.from(
+                (level['cluesDown'] as List<String>).map((c) => Text("• $c")),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
