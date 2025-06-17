@@ -10,7 +10,6 @@ class AccessibilityScreen extends StatefulWidget {
 
 class _AccessibilityScreenState extends State<AccessibilityScreen> {
   bool dyslexiaMode = false;
-  String selectedColorBlindMode = 'None';
 
   double fontSize = 17.0;
 
@@ -41,48 +40,6 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
       letterSpacing: 1.1,
       color: theme.textTheme.bodyMedium?.color,
     );
-  }
-
-  // Color Blind Mode Functions
-  List<String> getColorBlindModes() => ['None', 'Protanopia', 'Deuteranopia', 'Tritanopia'];
-
-  void setColorBlindMode(String mode) {
-    setState(() {
-      selectedColorBlindMode = mode;
-    });
-  }
-
-  // Returns a ColorFilter based on the selected color blind mode
-  ColorFilter? getColorBlindFilter() {
-    switch (selectedColorBlindMode) {
-      case 'Protanopia':
-        // Red-weakness simulation
-        return const ColorFilter.matrix([
-          0.567, 0.433, 0, 0, 0,
-          0.558, 0.442, 0, 0, 0,
-          0, 0.242, 0.758, 0, 0,
-          0, 0, 0, 1, 0,
-        ]);
-      case 'Deuteranopia':
-        // Green-weakness simulation
-        return const ColorFilter.matrix([
-          0.625, 0.375, 0, 0, 0,
-          0.7, 0.3, 0, 0, 0,
-          0, 0.3, 0.7, 0, 0,
-          0, 0, 0, 1, 0,
-        ]);
-      case 'Tritanopia':
-        // Blue-weakness simulation
-        return const ColorFilter.matrix([
-          0.95, 0.05, 0, 0, 0,
-          0, 0.433, 0.567, 0, 0,
-          0, 0.475, 0.525, 0, 0,
-          0, 0, 0, 1, 0,
-        ]);
-      case 'None':
-      default:
-        return null;
-    }
   }
 
   @override
@@ -152,23 +109,6 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                   setState(() => fontSize = val);
                 },
                 activeColor: theme.colorScheme.secondary,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Color Blind Mode",
-                style: baseTextStyle.copyWith(fontWeight: FontWeight.bold),
-              ),
-              DropdownButton<String>(
-                value: selectedColorBlindMode,
-                items: getColorBlindModes().map((type) {
-                  return DropdownMenuItem(
-                    value: type,
-                    child: Text(type, style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  if (val != null) setColorBlindMode(val);
-                },
               ),
               const SizedBox(height: 24),
               Text(

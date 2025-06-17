@@ -260,13 +260,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               icon: const Icon(
                                 Icons.lock_outline,
                                 size: 14,
-                                color: Color.fromARGB(255, 243, 186, 133),
+                                color:  Colors.brown,
                               ),
                               label: const Text(
                                 'Forgot Password?',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Color.fromARGB(255, 243, 186, 133),
+                                  color: Colors.brown,
                                   fontFamily: 'AlfaSlabOne',
                                 ),
                               ),

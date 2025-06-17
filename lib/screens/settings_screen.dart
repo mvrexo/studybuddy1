@@ -95,7 +95,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             secondary: Icon(Icons.brightness_6, color: themeAccent),
             title: Text(
               _selectedLanguage == 'ms' ? 'Mod Gelap' : 'Dark Mode',
-              style: const TextStyle(fontFamily: fontFamily),
+              style: TextStyle(
+                fontFamily: fontFamily,
+                color: isDarkMode ? Colors.white : Colors.black,
+              ),
             ),
             value: isDarkMode,
             activeColor: themePrimary,
@@ -112,7 +115,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // User Account
           ListTile(
             leading: const CircleAvatar(
-              backgroundImage: AssetImage('assets/default_avatar.png'), // Replace with user image
+              backgroundImage: AssetImage('assets/budak.png'), // Replace with user image
             ),
             title: Text(
               _selectedLanguage == 'ms' ? 'Akaun Pengguna' : 'User Account',
@@ -132,21 +135,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const SizedBox(height: 20),
 
-          ElevatedButton.icon(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            label: Text(
-              _selectedLanguage == 'ms' ? 'Log Keluar' : 'Log Out',
-              style: const TextStyle(fontFamily: fontFamily, color: Colors.white),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: themePrimary,
-              foregroundColor: Colors.white,
-              textStyle: const TextStyle(fontFamily: fontFamily),
-            ),
-            onPressed: () {
-              // Implement logout logic
-            },
-          ),
+
           const SizedBox(height: 10),
           TextButton.icon(
             icon: const Icon(Icons.delete_forever, color: Colors.red),

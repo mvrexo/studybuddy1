@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:studdybuddy1/screens/dashboard.dart';
 import 'package:studdybuddy1/screens/mind_map_screen.dart';
+import 'package:studdybuddy1/screens/mini_games.dart';
 import 'package:studdybuddy1/screens/notifications_screen.dart';
 import 'package:studdybuddy1/screens/profile.dart';
 import 'package:studdybuddy1/screens/learning_lessons.dart';

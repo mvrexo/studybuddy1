@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+const Color kThemePrimary = Colors.deepOrangeAccent;
+const Color kThemeBackground = Color(0xFFFFF5E1);
+const Color kThemeAccent = Color(0xFF8B4513);
+const String kFontFamily = 'AlfaSlabOne';
+
 class EditProfileScreen extends StatefulWidget {
   final Map<String, String> initialData;
   const EditProfileScreen({super.key, required this.initialData});
@@ -58,9 +63,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kThemeBackground,
       appBar: AppBar(
-        title: const Text('Edit Profile'),
-        backgroundColor: Colors.orange[200],
+        title: const Text(
+          'Edit Profile',
+          style: TextStyle(
+            fontFamily: kFontFamily,
+            fontSize: 22,
+          ),
+        ),
+        backgroundColor: kThemePrimary,
       ),
       body: SafeArea(
         child: ListView(
@@ -89,7 +101,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                  backgroundColor: kThemePrimary,
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
@@ -109,7 +122,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                   Navigator.pop(context, updatedData);
                 },
-                child: const Text('Save', style: TextStyle(fontSize: 16)),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(fontSize: 16, fontFamily: kFontFamily),
+                ),
               ),
             ),
           ],
@@ -118,8 +134,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text, TextCapitalization textCapitalization = TextCapitalization.none}) {
+  Widget _buildTextField(
+    String label,
+    TextEditingController controller, {
+    TextInputType keyboardType = TextInputType.text,
+    TextCapitalization textCapitalization = TextCapitalization.none,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextField(
@@ -128,6 +148,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         textCapitalization: textCapitalization,
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(fontFamily: kFontFamily),
           filled: true,
           fillColor: Colors.orange[50],
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -142,6 +163,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(fontFamily: kFontFamily),
           filled: true,
           fillColor: Colors.orange[50],
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -153,7 +175,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             items: options.map((option) {
               return DropdownMenuItem<String>(
                 value: option,
-                child: Text(option),
+                child: Text(option, style: const TextStyle(fontFamily: kFontFamily)),
               );
             }).toList(),
             onChanged: onChanged,
@@ -168,7 +190,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: kThemeAccent,
+          fontFamily: kFontFamily,
+        ),
       ),
     );
   }
