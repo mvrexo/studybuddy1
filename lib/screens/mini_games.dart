@@ -66,7 +66,7 @@ class MiniGamesScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (_) {
-                          const scienceCrosswordGame = const ScienceCrosswordGame();
+                          const scienceCrosswordGame = ScienceCrosswordGame();
                           return scienceCrosswordGame;
                         },
                       ),
@@ -562,8 +562,7 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
 
     String message;
     if (correct == total) {
-      message = '🎉 Great job! All correct!\n\n' +
-          (levels[selectedLevelIndex]['definitions'] as List<String>).join('\n');
+      message = '🎉 Great job! All correct!\n\n${(levels[selectedLevelIndex]['definitions'] as List<String>).join('\n')}';
     } else if (correct == 0) {
       message = '😕 All answers are wrong. Try again!';
     } else {
