@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const Color kThemePrimary = Colors.deepOrangeAccent;
 const Color kThemeBackground = Color(0xFFFFF5E1);
@@ -132,6 +133,7 @@ class _GameCard extends StatelessWidget {
   }
 }
 
+
 class MathMatchGame extends StatefulWidget {
   const MathMatchGame({super.key});
 
@@ -162,17 +164,47 @@ class _MathMatchGameState extends State<MathMatchGame> {
   ];
 
   int currentLevel = 0;
+  int unlockedLevel = 0;
+
   late List<Map<String, String>> currentQuestions;
   late List<String> choices;
 
   Map<String, String> matched = {};
   Map<String, bool> correct = {};
   Map<String, bool> attempted = {};
+  Map<int, int> starsEarned = {};
+  Map<int, int> attemptsCount = {};
+  Stopwatch levelTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
-    loadLevel(currentLevel);
+    loadProgress();
+  }
+
+  Future<void> loadProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    unlockedLevel = prefs.getInt('unlockedLevel') ?? 0;
+    final starsMap = prefs.getStringList('stars') ?? [];
+
+    for (var entry in starsMap) {
+      final split = entry.split(':');
+      starsEarned[int.parse(split[0])] = int.parse(split[1]);
+    }
+
+    setState(() {
+      currentLevel = 0;
+      loadLevel(currentLevel);
+    });
+  }
+
+  Future<void> saveProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('unlockedLevel', unlockedLevel);
+
+    final starsList =
+        starsEarned.entries.map((e) => '${e.key}:${e.value}').toList();
+    await prefs.setStringList('stars', starsList);
   }
 
   void loadLevel(int levelIndex) {
@@ -182,6 +214,10 @@ class _MathMatchGameState extends State<MathMatchGame> {
     matched = {};
     correct = {};
     attempted = {};
+    attemptsCount[levelIndex] = 0;
+    levelTimer.reset();
+    levelTimer.start();
+
     setState(() {});
   }
 
@@ -190,13 +226,21 @@ class _MathMatchGameState extends State<MathMatchGame> {
         correct[q['question']] != null && correct[q['question']] == true);
   }
 
-  void goToNextLevel() {
-    if (!isLevelComplete()) return;
+  void goToNextLevel() async {
+    levelTimer.stop();
+    int attempts = attemptsCount[currentLevel] ?? 0;
+    int stars = attempts <= 4 ? 3 : attempts <= 6 ? 2 : 1;
+    starsEarned[currentLevel] = stars;
+
     if (currentLevel + 1 < levels.length) {
+      if (unlockedLevel < currentLevel + 1) {
+        unlockedLevel = currentLevel + 1;
+      }
       currentLevel++;
+      await saveProgress();
       loadLevel(currentLevel);
     } else {
-      // Game completed
+      await saveProgress();
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -213,13 +257,28 @@ class _MathMatchGameState extends State<MathMatchGame> {
     }
   }
 
+  Widget _buildStars(int level) {
+    int stars = starsEarned[level] ?? 0;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(3, (i) {
+        return Icon(
+          Icons.star,
+          color: i < stars ? Colors.orangeAccent : Colors.grey,
+          size: 18,
+        );
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Reduce vertical padding for small screens
     return Scaffold(
       backgroundColor: kThemeBackground,
       appBar: AppBar(
         title: Text(
-          'Match Math - Level ${currentLevel + 1}',
+          'Math Match - Level ${currentLevel + 1}',
           style: const TextStyle(
             fontFamily: kFontFamily,
             color: Colors.white,
@@ -229,216 +288,230 @@ class _MathMatchGameState extends State<MathMatchGame> {
         backgroundColor: kThemePrimary,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: currentQuestions.map((q) {
-                final question = q['question']!;
-                final answer = q['answer']!;
-                final isMatched = matched[question] != null;
-                final isCorrect = correct[question] == true;
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // Use SingleChildScrollView to avoid overflow on small screens
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8), // smaller padding
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: currentQuestions.map((q) {
+                      final question = q['question']!;
+                      final answer = q['answer']!;
+                      final isMatched = matched[question] != null;
+                      final isCorrect = correct[question] == true;
 
-                Color boxColor;
-                Color borderColor;
-                if (isMatched) {
-                  if (isCorrect) {
-                    boxColor = Colors.green[200]!;
-                    borderColor = Colors.green;
-                  } else {
-                    boxColor = Colors.red[200]!;
-                    borderColor = Colors.red;
-                  }
-                } else {
-                  boxColor = Colors.grey[200]!;
-                  borderColor = Colors.grey;
-                }
+                      Color boxColor;
+                      Color borderColor;
+                      if (isMatched) {
+                        if (isCorrect) {
+                          boxColor = Colors.green[200]!;
+                          borderColor = Colors.green;
+                        } else {
+                          boxColor = Colors.red[200]!;
+                          borderColor = Colors.red;
+                        }
+                      } else {
+                        boxColor = Colors.grey[200]!;
+                        borderColor = Colors.grey;
+                      }
 
-                return Column(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 60,
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.all(4),
+                      return Column(
+                        children: [
+                          Container(
+                            width: 60, // reduced from 80
+                            height: 40, // reduced from 60
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: kThemeAccent, width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              question,
+                              style: const TextStyle(
+                                fontFamily: kFontFamily,
+                                fontSize: 16, // reduced from 20
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          DragTarget<String>(
+                            builder: (context, candidateData, rejectedData) {
+                              return AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 60, // reduced from 80
+                                height: 40, // reduced from 60
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: boxColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: borderColor,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Text(
+                                  matched[question] ?? '',
+                                  style: const TextStyle(
+                                    fontFamily: kFontFamily,
+                                    fontSize: 16, // reduced from 20
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                            },
+                            onWillAcceptWithDetails: (data) =>
+                                matched[question] == null,
+                            onAcceptWithDetails: (data) {
+                              setState(() {
+                                attempted[question] = true;
+                                attemptsCount[currentLevel] =
+                                    (attemptsCount[currentLevel] ?? 0) + 1;
+
+                                if (data.data == answer) {
+                                  matched[question] = data.data;
+                                  correct[question] = true;
+                                  if (isLevelComplete()) {
+                                    Future.delayed(
+                                        const Duration(milliseconds: 600), () {
+                                      goToNextLevel();
+                                    });
+                                  }
+                                } else {
+                                  correct[question] = false;
+                                  matched.remove(question);
+                                }
+                              });
+                            },
+                          )
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 18), // reduced from 36
+                  const Text(
+                    'Choices',
+                    style: TextStyle(
+                      fontFamily: kFontFamily,
+                      fontSize: 16, // reduced from 18
+                      color: kThemeAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8), // reduced from 12
+                  Wrap(
+                    spacing: 10, // reduced from 18
+                    runSpacing: 6, // reduced from 10
+                    alignment: WrapAlignment.center,
+                    children: choices.map((choice) {
+                      final isUsed = matched.containsValue(choice);
+                      return isUsed
+                          ? const SizedBox(width: 60, height: 40)
+                          : Draggable<String>(
+                              data: choice,
+                              feedback: _buildChoiceCard(choice, true),
+                              childWhenDragging: _buildChoiceCard(choice, false),
+                              child: _buildChoiceCard(choice, true),
+                            );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 10), // reduced from 16
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 32, // reduced from 36
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border.all(color: kThemeAccent, width: 2),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
+                        border: Border.all(color: kThemeAccent, width: 1.2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(
-                        question,
-                        style: const TextStyle(
-                          fontFamily: kFontFamily,
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    DragTarget<String>(
-                      builder: (context, candidateData, rejectedData) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: 80,
-                          height: 60,
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: boxColor,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: borderColor,
-                              width: 2,
-                            ),
-                          ),
-                          child: Text(
-                            matched[question] ?? '',
-                            style: const TextStyle(
-                              fontFamily: kFontFamily,
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
-                          ),
-                        );
-                      },
-                      onWillAcceptWithDetails: (data) =>
-                          matched[question] == null,
-                      onAcceptWithDetails: (data) {
-                        setState(() {
-                          attempted[question] = true;
-                          if (data.data == answer) {
-                            matched[question] = data.data;
-                            correct[question] = true;
-                          } else {
-                            correct[question] = false;
-                            matched.remove(question); // Reset if wrong
-                          }
-                        });
-                      },
-                    )
-                  ],
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 36),
-            const Text(
-              'Choices',
-              style: TextStyle(
-                fontFamily: kFontFamily,
-                fontSize: 18,
-                color: kThemeAccent,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 18,
-              runSpacing: 10,
-              alignment: WrapAlignment.center,
-              children: choices.map((choice) {
-                final isUsed = matched.containsValue(choice);
-                return isUsed
-                    ? const SizedBox(width: 80, height: 60)
-                    : Draggable<String>(
-                        data: choice,
-                        feedback: _buildChoiceCard(choice, true),
-                        childWhenDragging: _buildChoiceCard(choice, false),
-                        child: _buildChoiceCard(choice, true),
-                      );
-              }).toList(),
-            ),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                height: 32,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: kThemeAccent, width: 1.5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<int>(
-                    value: currentLevel,
-                    dropdownColor: Colors.white,
-                    icon: const Icon(Icons.arrow_drop_down, color: kThemeAccent, size: 20),
-                    style: const TextStyle(
-                      fontFamily: kFontFamily,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: kThemeAccent,
-                    ),
-                    underline: const SizedBox(),
-                    onChanged: (int? value) {
-                      if (value != null && value != currentLevel) {
-                        setState(() {
-                          currentLevel = value;
-                          loadLevel(currentLevel);
-                        });
-                      }
-                    },
-                    items: List.generate(
-                      levels.length,
-                      (i) => DropdownMenuItem(
-                        value: i,
-                        child: Text(
-                          'Level ${i + 1}',
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<int>(
+                          value: currentLevel,
+                          dropdownColor: Colors.white,
+                          icon: const Icon(Icons.arrow_drop_down,
+                              color: kThemeAccent, size: 18),
                           style: const TextStyle(
                             fontFamily: kFontFamily,
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 13,
                             color: kThemeAccent,
                           ),
+                          onChanged: (int? value) {
+                            if (value != null &&
+                                value <= unlockedLevel &&
+                                value != currentLevel) {
+                              setState(() {
+                                currentLevel = value;
+                                loadLevel(currentLevel);
+                              });
+                            }
+                          },
+                          items: List.generate(levels.length, (i) {
+                            final isUnlocked = i <= unlockedLevel;
+                            return DropdownMenuItem(
+                              value: i,
+                              enabled: isUnlocked,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Level ${i + 1}',
+                                    style: TextStyle(
+                                      color: isUnlocked
+                                          ? kThemeAccent
+                                          : Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _buildStars(i),
+                                ],
+                              ),
+                            );
+                          }),
                         ),
                       ),
                     ),
-                    hint: const Text(
-                      'Select Level',
-                      style: TextStyle(
-                        fontFamily: kFontFamily,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: kThemeAccent,
-                      ),
-                    ),
                   ),
-                ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildChoiceCard(String value, bool visible) {
     return Container(
-      width: 80,
-      height: 60,
+      width: 60, // reduced from 80
+      height: 40, // reduced from 60
       alignment: Alignment.center,
-      margin: const EdgeInsets.all(4),
+      margin: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: visible ? Colors.white : Colors.transparent,
         border: Border.all(color: kThemePrimary, width: 2),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: visible
             ? [
-                BoxShadow(
+                const BoxShadow(
                   color: Colors.black12,
                   blurRadius: 4,
                   offset: Offset(0, 2),
@@ -450,14 +523,13 @@ class _MathMatchGameState extends State<MathMatchGame> {
         visible ? value : '',
         style: TextStyle(
           fontFamily: kFontFamily,
-          fontSize: 24,
+          fontSize: 18, // reduced from 24
           color: visible ? kThemePrimary : Colors.transparent,
         ),
       ),
     );
   }
 }
-
 class ScienceCrosswordGame extends StatefulWidget {
   const ScienceCrosswordGame({super.key});
 

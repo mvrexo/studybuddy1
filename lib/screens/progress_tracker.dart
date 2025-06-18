@@ -33,7 +33,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Good Morning, $studentName!',
+              'Good Morning, Amanda!',
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
