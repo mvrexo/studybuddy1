@@ -60,7 +60,7 @@ class MiniGamesScreen extends StatelessWidget {
                 _GameCard(
                   icon: Icons.science,
                   title: 'Science Crossword',
-                  color: Colors.green[200]!,
+                  color: Colors.orange[200]!,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -360,54 +360,64 @@ class _MathMatchGameState extends State<MathMatchGame> {
                       );
               }).toList(),
             ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kThemePrimary,
-                    foregroundColor: Colors.white,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  icon: const Icon(Icons.menu),
-                  label: const Text(
-                    'Menu',
-                    style: TextStyle(
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                height: 32,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: kThemeAccent, width: 1.5),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<int>(
+                    value: currentLevel,
+                    dropdownColor: Colors.white,
+                    icon: const Icon(Icons.arrow_drop_down, color: kThemeAccent, size: 20),
+                    style: const TextStyle(
                       fontFamily: kFontFamily,
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
+                      color: kThemeAccent,
+                    ),
+                    underline: const SizedBox(),
+                    onChanged: (int? value) {
+                      if (value != null && value != currentLevel) {
+                        setState(() {
+                          currentLevel = value;
+                          loadLevel(currentLevel);
+                        });
+                      }
+                    },
+                    items: List.generate(
+                      levels.length,
+                      (i) => DropdownMenuItem(
+                        value: i,
+                        child: Text(
+                          'Level ${i + 1}',
+                          style: const TextStyle(
+                            fontFamily: kFontFamily,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: kThemeAccent,
+                          ),
+                        ),
+                      ),
+                    ),
+                    hint: const Text(
+                      'Select Level',
+                      style: TextStyle(
+                        fontFamily: kFontFamily,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: kThemeAccent,
+                      ),
                     ),
                   ),
-                  onPressed: () => Navigator.pop(context),
                 ),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isLevelComplete() ? Colors.green : Colors.grey,
-                    foregroundColor: Colors.white,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  icon: const Icon(Icons.arrow_forward),
-                  label: const Text(
-                    'Next Level',
-                    style: TextStyle(
-                      fontFamily: kFontFamily,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                  onPressed: isLevelComplete() ? goToNextLevel : null,
-                ),
-              ],
+              ),
             ),
             const SizedBox(height: 10),
           ],

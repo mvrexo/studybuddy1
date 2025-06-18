@@ -37,7 +37,8 @@ class LearningLessonsScreen extends StatelessWidget {
                     child: SubjectCard(
                       title: 'Mathematics',
                       icon: Icons.calculate,
-                      imageUrl: 'https://cdn-icons-png.flaticon.com/512/1974/1974717.png',
+                      imageUrl: '', // Not used anymore
+                      emoji: '🧮',
                       color: themePrimary,
                       backgroundColor: Colors.white,
                       onTap: () {
@@ -53,7 +54,8 @@ class LearningLessonsScreen extends StatelessWidget {
                     child: SubjectCard(
                       title: 'English',
                       icon: Icons.menu_book,
-                      imageUrl: 'https://cdn-icons-png.flaticon.com/512/2965/2965567.png',
+                      imageUrl: '', // Not used anymore
+                      emoji: '📖',
                       color: themePrimary,
                       backgroundColor: Colors.white,
                       onTap: () {
@@ -75,7 +77,8 @@ class LearningLessonsScreen extends StatelessWidget {
                     child: SubjectCard(
                       title: 'Science',
                       icon: Icons.science,
-                      imageUrl: 'https://cdn-icons-png.flaticon.com/512/2331/2331837.png',
+                      imageUrl: '', // Not used anymore
+                      emoji: '🔬',
                       color: themePrimary,
                       backgroundColor: Colors.white,
                       onTap: () {
@@ -99,8 +102,71 @@ class LearningLessonsScreen extends StatelessWidget {
   }
 }
 
-// ===================== Subject Card Widget =====================
+// Update SubjectCard to accept emoji instead of imageUrl
 class SubjectCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final String emoji;
+  final String imageUrl; // Kept for compatibility, but not used
+  final Color color;
+  final Color backgroundColor;
+  final VoidCallback onTap;
+
+  const SubjectCard({
+    super.key,
+    required this.title,
+    required this.icon,
+    this.emoji = '',
+    this.imageUrl = '',
+    required this.color,
+    this.backgroundColor = Colors.white,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: themeAccent, width: 2),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(2, 2),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Show emoji instead of image
+            Text(
+              emoji,
+              style: const TextStyle(fontSize: 60),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(
+                fontFamily: 'AlfaSlabOne',
+                fontSize: 20,
+                color: themeAccent,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ===================== Subject Card Widget =====================
+class LegacySubjectCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final String imageUrl;
@@ -108,7 +174,7 @@ class SubjectCard extends StatelessWidget {
   final Color backgroundColor;
   final VoidCallback onTap;
 
-  const SubjectCard({
+  const LegacySubjectCard({
     super.key,
     required this.title,
     required this.icon,
