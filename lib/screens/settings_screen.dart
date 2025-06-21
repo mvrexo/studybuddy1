@@ -115,7 +115,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // User Account
           ListTile(
             leading: const CircleAvatar(
-              backgroundImage: AssetImage('assets/budak.png'), // Replace with user image
+              backgroundImage: AssetImage('assets/budak.jpg'), // Replace with user image
             ),
             title: Text(
               _selectedLanguage == 'ms' ? 'Akaun Pengguna' : 'User Account',
