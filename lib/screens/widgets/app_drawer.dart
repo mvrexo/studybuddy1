@@ -13,13 +13,13 @@ import 'package:studdybuddy1/screens/login.dart';
 import 'package:studdybuddy1/screens/accessibility_screen.dart';
 import 'package:studdybuddy1/screens/flashcards_screen.dart';
 import 'package:studdybuddy1/screens/quiz_page.dart';
+import 'package:studdybuddy1/screens/support_screen.dart';
 
 // Custom theme colors and font
 final Color themePrimary = Colors.deepOrangeAccent;
 final Color themeBackground = const Color(0xFFFFF5E1); // light cream
 final Color themeAccent = const Color(0xFF8B4513); // brown tone
 final String fontFamily = 'AlfaSlabOne';
-
 
 class AppDrawer extends StatefulWidget {
   final bool showNotificationButton;
@@ -93,81 +93,88 @@ class _AppDrawerState extends State<AppDrawer> {
                 padding: EdgeInsets.zero,
                 children: [
                   if (widget.showNotificationButton)
-                    _buildDrawerItem(
-                      icon: Icons.notifications,
-                      text: 'Notifications',
-                      screen: const NotificationsScreen(),
-                    ),
                   _buildDrawerItem(
-                    icon: Icons.home,
-                    text: 'Home',
-                    screen: DashboardScreen(email: widget.currentEmail ?? ''),
+                    icon: Icons.notifications,
+                    text: 'Notifications',
+                    screen: const NotificationsScreen(),
                   ),
                   _buildDrawerItem(
-                    icon: Icons.person,
-                    text: 'My Profile',
-                    screen: ProfileScreen(email: widget.currentEmail ?? ''),
+                  icon: Icons.home,
+                  text: 'Home',
+                  screen: DashboardScreen(email: widget.currentEmail ?? ''),
+                  ),
+                  _buildDrawerItem(
+                  icon: Icons.person,
+                  text: 'My Profile',
+                  screen: ProfileScreen(email: widget.currentEmail ?? ''),
                   ),
                   _buildExpandableHeader(
-                    icon: Icons.folder_open,
-                    text: 'All Modules',
-                    expanded: expandLearning,
-                    isHovering: isHoveringLearning,
-                    onTap: () => setState(() => expandLearning = !expandLearning),
-                    onHover: (hovering) {
-                      if (kIsWeb ||
-                          Theme.of(context).platform == TargetPlatform.windows ||
-                          Theme.of(context).platform == TargetPlatform.macOS) {
-                        setState(() {
-                          isHoveringLearning = hovering;
-                          if (hovering) expandLearning = true;
-                        });
-                      }
-                    },
+                  icon: Icons.folder_open,
+                  text: 'All Modules',
+                  expanded: expandLearning,
+                  isHovering: isHoveringLearning,
+                  onTap: () => setState(() => expandLearning = !expandLearning),
+                  onHover: (hovering) {
+                    if (kIsWeb ||
+                      Theme.of(context).platform == TargetPlatform.windows ||
+                      Theme.of(context).platform == TargetPlatform.macOS) {
+                    setState(() {
+                      isHoveringLearning = hovering;
+                      if (hovering) expandLearning = true;
+                    });
+                    }
+                  },
                   ),
                   if (expandLearning) ...[
-                    _buildSubItem(text: 'Flashcards', screen: const FlashcardsScreen()),
-                    _buildSubItem(text: 'Quiz', screen: const QuizPage()),
-                    _buildSubItem(text: 'Lesson Planner', screen: const LessonPlannerScreen()),
-                    _buildSubItem(text: 'Progress Tracker', screen: const ProgressTrackerScreen()),
-                    _buildSubItem(text: 'Learning Lessons', screen: const LearningLessonsScreen()),
-                    _buildSubItem(text: 'Mind Map', screen: const MindMapScreen()),
-                    _buildSubItem(text: 'Mini Games', screen: const MiniGamesScreen()),
+                  _buildSubItem(text: 'Flashcards', screen: const FlashcardsScreen()),
+                  _buildSubItem(text: 'Quiz', screen: const QuizPage()),
+                  _buildSubItem(text: 'Lesson Planner', screen: const LessonPlannerScreen()),
+                  _buildSubItem(text: 'Progress Tracker', screen: const ProgressTrackerScreen()),
+                  _buildSubItem(text: 'Learning Lessons', screen: const LearningLessonsScreen()),
+                  _buildSubItem(text: 'Mind Map', screen: const MindMapScreen()),
+                  _buildSubItem(text: 'Mini Games', screen: const MiniGamesScreen()),
                   ],
                   _buildExpandableHeader(
-                    icon: Icons.folder_special,
-                    text: 'All Features',
-                    expanded: expandFeatures,
-                    isHovering: isHoveringFeatures,
-                    onTap: () => setState(() => expandFeatures = !expandFeatures),
-                    onHover: (hovering) {
-                      if (kIsWeb ||
-                          Theme.of(context).platform == TargetPlatform.windows ||
-                          Theme.of(context).platform == TargetPlatform.macOS) {
-                        setState(() {
-                          isHoveringFeatures = hovering;
-                          if (hovering) expandFeatures = true;
-                        });
-                      }
-                    },
+                  icon: Icons.folder_special,
+                  text: 'All Features',
+                  expanded: expandFeatures,
+                  isHovering: isHoveringFeatures,
+                  onTap: () => setState(() => expandFeatures = !expandFeatures),
+                  onHover: (hovering) {
+                    if (kIsWeb ||
+                      Theme.of(context).platform == TargetPlatform.windows ||
+                      Theme.of(context).platform == TargetPlatform.macOS) {
+                    setState(() {
+                      isHoveringFeatures = hovering;
+                      if (hovering) expandFeatures = true;
+                    });
+                    }
+                  },
                   ),
                   if (expandFeatures) ...[
-                    _buildSubItem(text: 'Accessibility', screen: const AccessibilityScreen()),
-                    _buildSubItem(
-                      text: 'Settings',
-                      screen: SettingsScreen(
-                        username: studentName,
-                        currentLanguage: _language,
-                        onLanguageChanged: (lang) => setState(() => _language = lang),
-                        isDarkMode: _themeMode == ThemeMode.dark,
-                        onDarkModeChanged: (bool value) {
-                          setState(() {
-                            _themeMode = value ? ThemeMode.dark : ThemeMode.light;
-                          });
-                        }, onUsernameChanged: (String value) {  }, onDeleteAccount: () {  },
-                      ),
+                  _buildSubItem(text: 'Accessibility', screen: const AccessibilityScreen()),
+                  _buildSubItem(
+                    text: 'Settings',
+                    screen: SettingsScreen(
+                    username: studentName,
+                    currentLanguage: _language,
+                    onLanguageChanged: (lang) => setState(() => _language = lang),
+                    isDarkMode: _themeMode == ThemeMode.dark,
+                    onDarkModeChanged: (bool value) {
+                      setState(() {
+                      _themeMode = value ? ThemeMode.dark : ThemeMode.light;
+                      });
+                    }, onUsernameChanged: (String value) {  }, onDeleteAccount: () {  },
                     ),
-                    
+                  ),
+                  _buildSubItem(
+                    text: 'Notifications',
+                    screen: const NotificationsScreen(),
+                  ),
+                  _buildSubItem(
+                    text: 'Support',
+                    screen: const SupportScreen(),
+                  ),
                   ],
                 ],
               ),
