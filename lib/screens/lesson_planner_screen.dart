@@ -165,6 +165,15 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
     String selectedKey = _formatDate(_selectedDay);
     List<Map<String, dynamic>> todayTasks = _tasksByDate[selectedKey] ?? [];
 
+    // Always show default tasks if no tasks exist for the day
+    if (todayTasks.isEmpty) {
+      todayTasks = _defaultTasks
+          .map((e) => {'title': e['title']!, 'completed': false})
+          .toList();
+      _tasksByDate[selectedKey] = todayTasks;
+      _saveTasks();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -332,75 +341,29 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
                             color: themeBackground.withAlpha((0.9 * 255).toInt()),
                             child: Padding(
                               padding: const EdgeInsets.all(12),
-                              child: todayTasks.isEmpty
-                                  // If no tasks, show add default tasks button
-                                  ? Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          "No tasks for this day.",
-                                          style: TextStyle(
-                                            fontFamily: 'AlfaSlabOne',
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        ElevatedButton.icon(
-                                          icon: const Icon(Icons.add_task),
-                                          label: const Text(
-                                            "Add Default Tasks",
-                                            style: TextStyle(
-                                              fontFamily: 'AlfaSlabOne',
-                                            ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: themePrimary,
-                                            foregroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _tasksByDate[selectedKey] =
-                                                  _defaultTasks
-                                                      .map((e) => {
-                                                            'title': e['title']!,
-                                                            'completed': false
-                                                          })
-                                                      .toList();
-                                              _calculateGoalProgress();
-                                            });
-                                            _saveTasks();
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                  // Show list of tasks with checkboxes
-                                  : ListView.builder(
-                                      itemCount: todayTasks.length,
-                                      itemBuilder: (context, index) {
-                                        final task = todayTasks[index];
-                                        return CheckboxListTile(
-                                          title: Text(
-                                            task['title'],
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              fontFamily: 'AlfaSlabOne',
-                                            ),
-                                          ),
-                                          value: task['completed'] as bool,
-                                          onChanged: (val) {
-                                            _toggleTaskCompleted(index);
-                                          },
-                                          controlAffinity:
-                                              ListTileControlAffinity.leading,
-                                          activeColor: Colors.green,
-                                        );
-                                      },
+                              child: ListView.builder(
+                                itemCount: todayTasks.length,
+                                itemBuilder: (context, index) {
+                                  final task = todayTasks[index];
+                                  return CheckboxListTile(
+                                    title: Text(
+                                      task['title'],
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'AlfaSlabOne',
+                                      ),
                                     ),
+                                    value: task['completed'] as bool,
+                                    onChanged: (val) {
+                                      _toggleTaskCompleted(index);
+                                    },
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    activeColor: Colors.green,
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
