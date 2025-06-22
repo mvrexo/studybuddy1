@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+/// SplashScreen widget displays an animated logo over a background image,
+/// then navigates to the login screen after a delay.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -8,7 +10,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
@@ -17,22 +20,27 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
 
+    // Initialize animation controller for logo animations
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
 
+    // Bounce (scale) animation for logo
     _scaleAnimation = CurvedAnimation(
       parent: _controller,
       curve: Curves.elasticOut,
     );
 
+    // Fade-in animation for logo
     _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
 
+    // Start the animations
     _controller.forward();
 
+    // Navigate to login screen after 3 seconds
     Timer(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/login');
@@ -42,6 +50,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
+    // Dispose animation controller to free resources
     _controller.dispose();
     super.dispose();
   }
@@ -62,7 +71,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           Center(
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final logoSize = constraints.maxHeight * 0.6; // 40% of screen height
+                // Logo size is 60% of screen height
+                final logoSize = constraints.maxHeight * 0.6;
                 return FadeTransition(
                   opacity: _fadeAnimation,
                   child: ScaleTransition(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'login.dart';
 
+/// Sign Up Screen for Study Buddy app
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -10,13 +11,16 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
+class _SignUpScreenState extends State<SignUpScreen>
+    with SingleTickerProviderStateMixin {
+  // Form key and controllers
   final _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _obscurePassword = true;
 
+  // Animation controllers for bee images
   late AnimationController _animationController;
   late Animation<double> _leftBeeXAnimation;
   late Animation<double> _leftBeeYAnimation;
@@ -27,18 +31,19 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
 
+    // Initialize animation controller
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
     )..repeat(reverse: true);
 
+    // Bee movement animations
     _leftBeeXAnimation = Tween<double>(begin: -60, end: 160).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
     _leftBeeYAnimation = Tween<double>(begin: -10, end: 10).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOutSine),
     );
-
     _rightBeeXAnimation = Tween<double>(begin: -60, end: 160).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
@@ -49,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
+    // Dispose controllers
     _animationController.dispose();
     usernameController.dispose();
     emailController.dispose();
@@ -56,6 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
     super.dispose();
   }
 
+  /// Handles sign up logic and shows a snackbar
   void _signUp() {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -67,6 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
     }
   }
 
+  /// Returns input decoration for text fields
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
@@ -90,29 +98,34 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
     return Scaffold(
       body: Stack(
         children: [
+          // Background image
           Positioned.fill(
             child: Image.asset(
               'assets/awan.jpg',
               fit: BoxFit.cover,
             ),
           ),
+          // Blur effect overlay
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
               child: Container(color: Colors.white.withOpacity(0.2)),
             ),
           ),
+          // Main content
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Logo and animated bees
                   SizedBox(
                     height: 150,
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
+                        // Logo
                         Center(
                           child: SizedBox(
                             width: 800,
@@ -123,6 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             ),
                           ),
                         ),
+                        // Left animated bee
                         AnimatedBuilder(
                           animation: _animationController,
                           builder: (context, child) {
@@ -139,6 +153,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             );
                           },
                         ),
+                        // Right animated bee
                         AnimatedBuilder(
                           animation: _animationController,
                           builder: (context, child) {
@@ -159,6 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                     ),
                   ),
                   const SizedBox(height: 10),
+                  // Animated title text
                   AnimatedTextKit(
                     animatedTexts: [
                       TypewriterAnimatedText(
@@ -177,6 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                     isRepeatingAnimation: true,
                   ),
                   const SizedBox(height: 20),
+                  // Sign up form container
                   Container(
                     width: 340,
                     padding: const EdgeInsets.all(25),
@@ -196,6 +213,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          // Username field
                           TextFormField(
                             controller: usernameController,
                             decoration: _inputDecoration('Username'),
@@ -208,6 +226,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             ),
                           ),
                           const SizedBox(height: 15),
+                          // Email field
                           TextFormField(
                             controller: emailController,
                             decoration: _inputDecoration('Email'),
@@ -221,13 +240,16 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             ),
                           ),
                           const SizedBox(height: 15),
+                          // Password field with visibility toggle
                           TextFormField(
                             controller: passwordController,
                             obscureText: _obscurePassword,
                             decoration: _inputDecoration('Password').copyWith(
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
                                   color: Colors.brown,
                                 ),
                                 onPressed: () {
@@ -246,6 +268,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             ),
                           ),
                           const SizedBox(height: 20),
+                          // Sign Up button
                           ElevatedButton(
                             onPressed: _signUp,
                             style: ElevatedButton.styleFrom(
@@ -265,11 +288,13 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             ),
                           ),
                           const SizedBox(height: 15),
+                          // Login navigation button
                           TextButton(
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (_) => const LoginScreen()),
+                                MaterialPageRoute(
+                                    builder: (_) => const LoginScreen()),
                               );
                             },
                             child: const Text(

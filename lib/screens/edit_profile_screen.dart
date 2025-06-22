@@ -7,6 +7,7 @@ const String kFontFamily = 'AlfaSlabOne';
 
 class EditProfileScreen extends StatefulWidget {
   final Map<String, String> initialData;
+
   const EditProfileScreen({super.key, required this.initialData});
 
   @override
@@ -89,14 +90,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             _buildDropdownField('Class', selectedClass, classOptions, (val) {
               setState(() => selectedClass = val!);
             }),
-
             const SizedBox(height: 20),
             _sectionTitle('Parent Info'),
             _buildTextField('Name', parentNameController, textCapitalization: TextCapitalization.words),
             _buildTextField('Occupation', parentOccupationController),
             _buildTextField('Phone', parentPhoneController, keyboardType: TextInputType.phone),
             _buildTextField('Email', parentEmailController, keyboardType: TextInputType.emailAddress),
-
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// AccessibilityScreen allows users to adjust text size and enable dyslexia-friendly fonts.
 class AccessibilityScreen extends StatefulWidget {
   const AccessibilityScreen({super.key});
 
@@ -9,23 +10,34 @@ class AccessibilityScreen extends StatefulWidget {
 }
 
 class _AccessibilityScreenState extends State<AccessibilityScreen> {
+  // Whether dyslexia-friendly mode is enabled
   bool dyslexiaMode = false;
 
+  // Current font size
   double fontSize = 17.0;
 
+  // List of dyslexia-friendly fonts
   final List<String> dyslexiaFonts = ['Lexend', 'Atkinson Hyperlegible'];
+
+  // Currently selected dyslexia-friendly font
   String selectedFont = 'Lexend';
 
+  // Default font family for non-dyslexia mode
   final String fontFamily = 'AlfaSlabOne';
 
+  /// Returns the base text style depending on the current settings.
   TextStyle getBaseTextStyle(BuildContext context) {
     final theme = Theme.of(context);
+
     if (!dyslexiaMode) {
+      // Use default font when dyslexia mode is off
       return theme.textTheme.bodyMedium!.copyWith(
         fontSize: fontSize,
         fontFamily: fontFamily,
       );
     }
+
+    // Use selected dyslexia-friendly font
     TextStyle style;
     switch (selectedFont) {
       case 'Atkinson Hyperlegible':
@@ -65,6 +77,7 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
           style: baseTextStyle,
           child: ListView(
             children: [
+              // Dyslexia Mode Switch
               SwitchListTile(
                 title: Text(
                   "Dyslexia Friendly-Mode",
@@ -79,13 +92,18 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                 },
                 activeColor: theme.colorScheme.secondary,
               ),
+
+              // Font selection dropdown (only visible in dyslexia mode)
               if (dyslexiaMode)
                 DropdownButton<String>(
                   value: selectedFont,
                   items: dyslexiaFonts.map((font) {
                     return DropdownMenuItem(
                       value: font,
-                      child: Text(font, style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                      child: Text(
+                        font,
+                        style: TextStyle(color: theme.textTheme.bodyMedium?.color),
+                      ),
                     );
                   }).toList(),
                   onChanged: (val) {
@@ -94,11 +112,16 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                     }
                   },
                 ),
+
               const SizedBox(height: 16),
+
+              // Text size label
               Text(
                 "Text Size",
                 style: baseTextStyle.copyWith(fontWeight: FontWeight.bold),
               ),
+
+              // Font size slider
               Slider(
                 min: 12,
                 max: 24,
@@ -110,7 +133,10 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                 },
                 activeColor: theme.colorScheme.secondary,
               ),
+
               const SizedBox(height: 24),
+
+              // Sample text label
               Text(
                 "Sample Text",
                 style: baseTextStyle.copyWith(
@@ -118,7 +144,10 @@ class _AccessibilityScreenState extends State<AccessibilityScreen> {
                   fontSize: fontSize + 3,
                 ),
               ),
+
               const SizedBox(height: 10),
+
+              // Sample text
               Text(
                 "The quick brown fox jumps over the lazy dog.",
                 style: baseTextStyle,

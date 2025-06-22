@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+/// Forgot Password Screen
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
@@ -12,9 +13,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
 
+  /// Handles form submission and shows a snackbar
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      // You can call your reset password logic here
+      // TODO: Add your reset password logic here
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -26,6 +28,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     }
   }
 
+  /// Returns input decoration for text fields
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
@@ -47,28 +50,34 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // AppBar styled similarly
+      // AppBar styled similarly to login
       appBar: AppBar(
-        title: const Text('Forgot Password', style: TextStyle(fontFamily: 'AlfaSlabOne')),
+        title: const Text(
+          'Forgot Password',
+          style: TextStyle(fontFamily: 'AlfaSlabOne'),
+        ),
         backgroundColor: const Color.fromARGB(255, 245, 139, 107),
         elevation: 0,
       ),
       body: Stack(
         children: [
-          // Background image same as login
+          // Background image (same as login)
           Positioned.fill(
             child: Image.asset(
               'assets/awan.jpg',
               fit: BoxFit.cover,
             ),
           ),
-          // Blur overlay same as login
+          // Blur overlay (same as login)
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-              child: Container(color: Colors.white.withOpacity(0.2)),
+              child: Container(
+                color: Colors.white.withOpacity(0.2),
+              ),
             ),
           ),
+          // Centered form card
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
@@ -91,6 +100,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Instruction text
                       const Text(
                         'Enter your email to receive a new password.',
                         style: TextStyle(
@@ -101,15 +111,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 25),
+                      // Email input field
                       TextFormField(
                         controller: emailController,
                         decoration: _inputDecoration('Email'),
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) => value == null || !value.contains('@')
-                            ? 'Please enter a valid email'
-                            : null,
+                        validator: (value) =>
+                            value == null || !value.contains('@')
+                                ? 'Please enter a valid email'
+                                : null,
                       ),
                       const SizedBox(height: 30),
+                      // Submit button
                       ElevatedButton(
                         onPressed: _submit,
                         style: ElevatedButton.styleFrom(
@@ -129,9 +142,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                       ),
                       const SizedBox(height: 15),
+                      // Back to login button
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context); // back to login page
+                          Navigator.pop(context); // Back to login page
                         },
                         child: const Text(
                           'Back to Login',
@@ -147,7 +161,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

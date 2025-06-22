@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Progress Tracker Screen displays user's study progress and activities.
 class ProgressTrackerScreen extends StatefulWidget {
   const ProgressTrackerScreen({super.key});
 
@@ -9,14 +10,17 @@ class ProgressTrackerScreen extends StatefulWidget {
 }
 
 class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
+  // User's progress data
   int minutesStudied = 36;
   int dailyGoal = 60;
   int weeklyProgress = 210;
   int weeklyGoal = 420;
 
+  // User's profile info
   String studentName = 'Amanda Sopeah';
   String studentProfilePic = 'assets/budak.jpg';
 
+  /// Builds the header with profile picture, greeting, and date.
   Widget _buildHeader() {
     final now = DateTime.now();
     final day = DateFormat('EEEE').format(now);
@@ -49,6 +53,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
     );
   }
 
+  /// Builds a progress card with a circular indicator.
   Widget _buildProgressCard(String label, int current, int total) {
     double percent = total == 0 ? 0 : current / total;
     percent = percent.clamp(0, 1);
@@ -83,8 +88,8 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
                   child: CircularProgressIndicator(
                     value: percent,
                     backgroundColor: Colors.grey.shade200,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Colors.orange.shade400),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.orange.shade400),
                     strokeWidth: 8,
                   ),
                 ),
@@ -103,6 +108,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
     );
   }
 
+  /// Builds the latest activities section.
   Widget _buildLatestActivities() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,6 +127,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
                 spacing: 16,
                 runSpacing: 16,
                 children: [
+                  // Activity 1
                   Container(
                     width: boxSize,
                     height: boxSize,
@@ -154,6 +161,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
                       ],
                     ),
                   ),
+                  // Activity 2
                   Container(
                     width: boxSize,
                     height: boxSize,
@@ -196,6 +204,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
     );
   }
 
+  /// Main build method for the screen.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,6 +241,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
+              // Challenge Card
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -259,6 +269,7 @@ class _ProgressTrackerScreenState extends State<ProgressTrackerScreen> {
                 ),
               ),
               const SizedBox(height: 24),
+              // Progress Cards Row
               Row(
                 children: [
                   _buildProgressCard('Today\'s Progress', minutesStudied, dailyGoal),

@@ -4,10 +4,12 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+// Theme colors
 final Color themePrimary = Colors.deepOrangeAccent;
 final Color themeBackground = const Color(0xFFFFF5E1);
 final Color themeAccent = const Color(0xFF8B4513);
 
+/// Lesson Planner Screen
 class LessonPlannerScreen extends StatefulWidget {
   const LessonPlannerScreen({super.key});
 
@@ -16,10 +18,14 @@ class LessonPlannerScreen extends StatefulWidget {
 }
 
 class LessonPlannerScreenState extends State<LessonPlannerScreen> {
+  // Stores tasks by date in the format 'yyyy-MM-dd'
   final Map<String, List<Map<String, dynamic>>> _tasksByDate = {};
+
+  // Calendar state
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
 
+  // Default tasks for a new day
   final List<Map<String, String>> _defaultTasks = [
     {'title': 'Read an English story'},
     {'title': 'Complete a math quiz'},
@@ -35,6 +41,7 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
     _loadTasks();
   }
 
+  /// Loads tasks from shared preferences
   Future<void> _loadTasks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedData = prefs.getString('lesson_tasks');
@@ -52,7 +59,7 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
           }).toList();
         });
       } catch (_) {
-        // ignore corrupt data
+        // Ignore corrupt data
       }
     }
     _calculateGoalProgress();
@@ -61,6 +68,7 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
     });
   }
 
+  /// Saves tasks to shared preferences
   Future<void> _saveTasks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> jsonData = {};
@@ -70,9 +78,11 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
     await prefs.setString('lesson_tasks', jsonEncode(jsonData));
   }
 
+  /// Formats a DateTime as 'yyyy-MM-dd'
   String _formatDate(DateTime d) =>
       "${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
 
+  /// Handles day selection in the calendar
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       _selectedDay = selectedDay;
@@ -88,6 +98,7 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
     });
   }
 
+  /// Toggles completion state of a task
   void _toggleTaskCompleted(int index) {
     String key = _formatDate(_selectedDay);
     setState(() {
@@ -96,25 +107,30 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
       _calculateGoalProgress();
     });
     _saveTasks();
+    // Show congrats dialog if all tasks completed
     if (_tasksByDate[key]!.every((task) => task['completed'] == true)) {
       _showCongratsDialog();
     }
   }
 
+  /// Shows a reminder dialog
   void _showReminder() {
     showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: const Text('Reminder'),
-              content: const Text('Finish your learning tasks today!'),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('OK')),
-              ],
-            ));
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Reminder'),
+        content: const Text('Finish your learning tasks today!'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
+  /// Calculates the progress for the selected day's tasks
   void _calculateGoalProgress() {
     String key = _formatDate(_selectedDay);
     if (!_tasksByDate.containsKey(key)) {
@@ -127,18 +143,21 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
     _goalProgress = total == 0 ? 0 : completed / total;
   }
 
+  /// Shows a congratulatory dialog when all tasks are completed
   void _showCongratsDialog() {
     showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: const Text('Great job! 🎉'),
-              content: const Text('You have completed all tasks for today!'),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Thanks')),
-              ],
-            ));
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Great job! 🎉'),
+        content: const Text('You have completed all tasks for today!'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Thanks'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -169,6 +188,7 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // Background image with blur
           Image.asset(
             'assets/rocket.jpg',
             fit: BoxFit.cover,
@@ -186,9 +206,11 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
                   ? const Center(child: CircularProgressIndicator())
                   : Column(
                       children: [
+                        // Calendar Card
                         Card(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           elevation: 6,
                           color: themeBackground.withAlpha((0.9 * 255).toInt()),
                           child: Padding(
@@ -214,24 +236,31 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
                                   shape: BoxShape.circle,
                                 ),
                                 weekendTextStyle: TextStyle(
-                                    color: themeAccent,
-                                    fontFamily: 'AlfaSlabOne'),
+                                  color: themeAccent,
+                                  fontFamily: 'AlfaSlabOne',
+                                ),
                                 defaultTextStyle: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'AlfaSlabOne'),
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'AlfaSlabOne',
+                                ),
                               ),
                               headerStyle: HeaderStyle(
                                 formatButtonVisible: false,
                                 titleCentered: true,
                                 titleTextStyle: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'AlfaSlabOne',
-                                    color: themeAccent),
-                                leftChevronIcon: Icon(Icons.chevron_left,
-                                    color: themePrimary),
-                                rightChevronIcon: Icon(Icons.chevron_right,
-                                    color: themePrimary),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'AlfaSlabOne',
+                                  color: themeAccent,
+                                ),
+                                leftChevronIcon: Icon(
+                                  Icons.chevron_left,
+                                  color: themePrimary,
+                                ),
+                                rightChevronIcon: Icon(
+                                  Icons.chevron_right,
+                                  color: themePrimary,
+                                ),
                               ),
                               daysOfWeekStyle: DaysOfWeekStyle(
                                 weekdayStyle: TextStyle(
@@ -251,14 +280,18 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
+                        // Progress Bar Card
                         Card(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                           elevation: 5,
                           color: themeBackground.withAlpha((0.9 * 255).toInt()),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 10),
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
                             child: Row(
                               children: [
                                 Icon(Icons.star, color: themePrimary, size: 28),
@@ -283,29 +316,33 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
                                     fontFamily: 'AlfaSlabOne',
                                     color: themeAccent,
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
                         ),
                         const SizedBox(height: 16),
+                        // Task List Card
                         Expanded(
                           child: Card(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                             elevation: 6,
                             color: themeBackground.withAlpha((0.9 * 255).toInt()),
                             child: Padding(
                               padding: const EdgeInsets.all(12),
                               child: todayTasks.isEmpty
+                                  // If no tasks, show add default tasks button
                                   ? Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         const Text(
                                           "No tasks for this day.",
                                           style: TextStyle(
-                                              fontFamily: 'AlfaSlabOne',
-                                              fontSize: 16),
+                                            fontFamily: 'AlfaSlabOne',
+                                            fontSize: 16,
+                                          ),
                                         ),
                                         const SizedBox(height: 16),
                                         ElevatedButton.icon(
@@ -313,23 +350,26 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
                                           label: const Text(
                                             "Add Default Tasks",
                                             style: TextStyle(
-                                                fontFamily: 'AlfaSlabOne'),
+                                              fontFamily: 'AlfaSlabOne',
+                                            ),
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: themePrimary,
                                             foregroundColor: Colors.white,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
                                           ),
                                           onPressed: () {
                                             setState(() {
-                                              _tasksByDate[selectedKey] = _defaultTasks
-                                                  .map((e) => {
-                                                        'title': e['title']!,
-                                                        'completed': false
-                                                      })
-                                                  .toList();
+                                              _tasksByDate[selectedKey] =
+                                                  _defaultTasks
+                                                      .map((e) => {
+                                                            'title': e['title']!,
+                                                            'completed': false
+                                                          })
+                                                      .toList();
                                               _calculateGoalProgress();
                                             });
                                             _saveTasks();
@@ -337,6 +377,7 @@ class LessonPlannerScreenState extends State<LessonPlannerScreen> {
                                         ),
                                       ],
                                     )
+                                  // Show list of tasks with checkboxes
                                   : ListView.builder(
                                       itemCount: todayTasks.length,
                                       itemBuilder: (context, index) {

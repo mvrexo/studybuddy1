@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// Theme Colors
+// ===================== Theme Colors =====================
 final Color themePrimary = Colors.deepOrangeAccent;
 final Color themeBackground = const Color(0xFFFFF5E1);
 final Color themeAccent = const Color(0xFF8B4513);
@@ -30,6 +30,7 @@ class LearningLessonsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
+            // First Row: Mathematics & English
             Expanded(
               child: Row(
                 children: [
@@ -70,6 +71,7 @@ class LearningLessonsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
+            // Second Row: Science & Empty
             Expanded(
               child: Row(
                 children: [
@@ -102,7 +104,7 @@ class LearningLessonsScreen extends StatelessWidget {
   }
 }
 
-// Update SubjectCard to accept emoji instead of imageUrl
+// ===================== Subject Card Widget (with Emoji) =====================
 class SubjectCard extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -165,7 +167,7 @@ class SubjectCard extends StatelessWidget {
   }
 }
 
-// ===================== Subject Card Widget =====================
+// ===================== Legacy Subject Card Widget (with Image) =====================
 class LegacySubjectCard extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -231,6 +233,7 @@ class MathGameScreen extends StatefulWidget {
 }
 
 class _MathGameScreenState extends State<MathGameScreen> {
+  // List of activities for the math game
   final List<Map<String, dynamic>> originalActivities = [
     {'question': '🍎', 'count': 4},
     {'question': '🐇', 'count': 3},
@@ -254,6 +257,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
     _resetGame();
   }
 
+  // Reset the game state
   void _resetGame() {
     activities = List<Map<String, dynamic>>.from(originalActivities);
     activities.shuffle(Random());
@@ -264,6 +268,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
     showingDialog = false;
   }
 
+  // Show score dialog when game is complete
   void _showScoreScreen() {
     if (showingDialog) return;
     showingDialog = true;
@@ -300,6 +305,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
     });
   }
 
+  // Handle answer drop and show feedback dialog
   void _handleAnswer(String data, int correctAnswer) {
     final isCorrect = data == correctAnswer.toString();
     if (!isCorrect) {
@@ -346,9 +352,9 @@ class _MathGameScreenState extends State<MathGameScreen> {
           ],
         ),
       ).then((_) {
-        setState(() {
-          showingDialog = false;
-        });
+        if (mounted) {
+          setState(() => showingDialog = false);
+        }
       });
     });
     showingDialog = true;
@@ -360,6 +366,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // If all questions are done, show score
     if (currentIndex >= activities.length) {
       _showScoreScreen();
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -423,7 +430,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
                   ),
                 ],
               ),
-              // Drag Target
+              // Drag Target for answer
               DragTarget<String>(
                 builder: (context, candidateData, rejectedData) {
                   return Container(
@@ -489,7 +496,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
                   ),
                 ],
               ),
-              // Number Options
+              // Number Options to drag
               Column(
                 children: [
                   Text(
@@ -526,6 +533,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
     );
   }
 
+  // Helper widget for draggable number box
   Widget _buildNumberBox(String num, {required Color color}) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -566,6 +574,7 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
   final PageController _pageController = PageController();
   int currentPage = 0;
 
+  // Story pages with images and text
   final List<Map<String, String>> pages = const [
     {
       'image': 'assets/c1.jpg',
@@ -595,12 +604,14 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
     super.dispose();
   }
 
+  // Update current page index
   void _onPageChanged(int index) {
     setState(() {
       currentPage = index;
     });
   }
 
+  // Go to previous page
   void _goToPrevious() {
     if (currentPage > 0) {
       _pageController.previousPage(
@@ -610,6 +621,7 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
     }
   }
 
+  // Go to next page
   void _goToNext() {
     if (currentPage < pages.length - 1) {
       _pageController.nextPage(
@@ -619,6 +631,7 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
     }
   }
 
+  // Dots indicator for page navigation
   Widget _buildDotsIndicator() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -655,6 +668,7 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
       ),
       body: Column(
         children: [
+          // Story pages
           Expanded(
             child: PageView.builder(
               controller: _pageController,
@@ -703,6 +717,7 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
           const SizedBox(height: 16),
           _buildDotsIndicator(),
           const SizedBox(height: 12),
+          // Navigation buttons
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
             child: Row(
@@ -737,6 +752,7 @@ class _EnglishReadingScreenState extends State<EnglishReadingScreen> {
 class ScienceTutorialScreen extends StatelessWidget {
   const ScienceTutorialScreen({super.key});
 
+  // List of science experiments
   final List<Map<String, dynamic>> experiments = const [
     {
       'title': '🌱 Plants & Animals',
@@ -794,6 +810,7 @@ class ScienceTutorialScreen extends StatelessWidget {
     },
   ];
 
+  // Launch external URL (video)
   void _launchURL(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {

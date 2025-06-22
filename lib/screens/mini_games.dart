@@ -6,6 +6,7 @@ const Color kThemeBackground = Color(0xFFFFF5E1);
 const Color kThemeAccent = Color(0xFF8B4513);
 const String kFontFamily = 'AlfaSlabOne';
 
+// Main screen for Mini Games selection
 class MiniGamesScreen extends StatelessWidget {
   const MiniGamesScreen({super.key});
 
@@ -42,9 +43,11 @@ class MiniGamesScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
+             // Game cards in a row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // Math Match game card
                 _GameCard(
                   icon: Icons.calculate,
                   title: 'Match Math',
@@ -58,6 +61,7 @@ class MiniGamesScreen extends StatelessWidget {
                     );
                   },
                 ),
+                // Science Crossword game card
                 _GameCard(
                   icon: Icons.science,
                   title: 'Science Crossword',
@@ -84,6 +88,7 @@ class MiniGamesScreen extends StatelessWidget {
   }
 }
 
+// Reusable game card widget
 class _GameCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -113,8 +118,10 @@ class _GameCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Game icon
               Icon(icon, size: 54, color: kThemeAccent),
               const SizedBox(height: 18),
+              // Game title
               Text(
                 title,
                 style: const TextStyle(
@@ -133,7 +140,7 @@ class _GameCard extends StatelessWidget {
   }
 }
 
-
+// Math Match Game - Drag and drop matching game
 class MathMatchGame extends StatefulWidget {
   const MathMatchGame({super.key});
 
@@ -142,19 +149,23 @@ class MathMatchGame extends StatefulWidget {
 }
 
 class _MathMatchGameState extends State<MathMatchGame> {
+  // Game data structure
   final List<List<Map<String, String>>> levels = [
+     // Level 1 - Basic addition
     [
       {'question': '2 + 2', 'answer': '4'},
       {'question': '2 + 1', 'answer': '3'},
       {'question': '1 + 4', 'answer': '5'},
       {'question': '3 + 4', 'answer': '7'},
     ],
+    // Level 2 - Mixed operations
     [
       {'question': '5 - 2', 'answer': '3'},
       {'question': '4 + 4', 'answer': '8'},
       {'question': '6 - 1', 'answer': '5'},
       {'question': '5 + 2', 'answer': '7'},
     ],
+    // Level 3 - Multiplication/division
     [
       {'question': '2 x 3', 'answer': '6'},
       {'question': '9 - 1', 'answer': '8'},
@@ -162,7 +173,8 @@ class _MathMatchGameState extends State<MathMatchGame> {
       {'question': '10 / 2', 'answer': '5'},
     ]
   ];
-
+  
+  // Game state variables
   int currentLevel = 0;
   int unlockedLevel = 0;
 
@@ -180,13 +192,16 @@ class _MathMatchGameState extends State<MathMatchGame> {
   void initState() {
     super.initState();
     loadProgress();
+    // Load saved game state
   }
 
+  // Load saved game progress from SharedPreferences
   Future<void> loadProgress() async {
     final prefs = await SharedPreferences.getInstance();
     unlockedLevel = prefs.getInt('unlockedLevel') ?? 0;
     final starsMap = prefs.getStringList('stars') ?? [];
 
+    // Parse star ratings for each level
     for (var entry in starsMap) {
       final split = entry.split(':');
       starsEarned[int.parse(split[0])] = int.parse(split[1]);
@@ -197,20 +212,23 @@ class _MathMatchGameState extends State<MathMatchGame> {
       loadLevel(currentLevel);
     });
   }
-
+  // Save game progress to SharedPreferences
   Future<void> saveProgress() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('unlockedLevel', unlockedLevel);
-
+    
+    // Convert star ratings to string format
     final starsList =
         starsEarned.entries.map((e) => '${e.key}:${e.value}').toList();
     await prefs.setStringList('stars', starsList);
   }
 
+  // Initialize a game level
   void loadLevel(int levelIndex) {
     currentQuestions = levels[levelIndex];
     choices = currentQuestions.map((q) => q['answer']!).toList()..shuffle();
 
+    // Reset game state for the level
     matched = {};
     correct = {};
     attempted = {};
@@ -220,18 +238,22 @@ class _MathMatchGameState extends State<MathMatchGame> {
 
     setState(() {});
   }
-
+  
+  // Check if all questions in current level are answered correctly
   bool isLevelComplete() {
     return currentQuestions.every((q) =>
         correct[q['question']] != null && correct[q['question']] == true);
   }
 
+  // Proceed to next level or show completion message
   void goToNextLevel() async {
     levelTimer.stop();
+    // Calculate stars based on attempts (fewer attempts = more stars)
     int attempts = attemptsCount[currentLevel] ?? 0;
     int stars = attempts <= 4 ? 3 : attempts <= 6 ? 2 : 1;
     starsEarned[currentLevel] = stars;
 
+     // Unlock next level if needed
     if (currentLevel + 1 < levels.length) {
       if (unlockedLevel < currentLevel + 1) {
         unlockedLevel = currentLevel + 1;
@@ -240,6 +262,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
       await saveProgress();
       loadLevel(currentLevel);
     } else {
+      // All levels completed
       await saveProgress();
       showDialog(
         context: context,
@@ -257,6 +280,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
     }
   }
 
+   // Build star rating display widget
   Widget _buildStars(int level) {
     int stars = starsEarned[level] ?? 0;
     return Row(
@@ -298,6 +322,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 6),
+                     // Questions row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: currentQuestions.map((q) {
@@ -306,6 +331,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
                       final isMatched = matched[question] != null;
                       final isCorrect = correct[question] == true;
 
+                      // Determine box colors based on match status
                       Color boxColor;
                       Color borderColor;
                       if (isMatched) {
@@ -323,6 +349,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
 
                       return Column(
                         children: [
+                          // Question display
                           Container(
                             width: 60, // reduced from 80
                             height: 40, // reduced from 60
@@ -350,6 +377,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
                             ),
                           ),
                           const SizedBox(height: 2),
+                           // Answer drop target
                           DragTarget<String>(
                             builder: (context, candidateData, rejectedData) {
                               return AnimatedContainer(
@@ -404,6 +432,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
                       );
                     }).toList(),
                   ),
+                  // Choices section
                   const SizedBox(height: 18), // reduced from 36
                   const Text(
                     'Choices',
@@ -416,6 +445,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8), // reduced from 12
+                  // Draggable answer choices
                   Wrap(
                     spacing: 10, // reduced from 18
                     runSpacing: 6, // reduced from 10
@@ -424,6 +454,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
                       final isUsed = matched.containsValue(choice);
                       return isUsed
                           ? const SizedBox(width: 60, height: 40)
+                          // Draggable answer choices
                           : Draggable<String>(
                               data: choice,
                               feedback: _buildChoiceCard(choice, true),
@@ -432,6 +463,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
                             );
                     }).toList(),
                   ),
+                  // Level selector
                   const SizedBox(height: 10), // reduced from 16
                   Align(
                     alignment: Alignment.center,
@@ -499,6 +531,7 @@ class _MathMatchGameState extends State<MathMatchGame> {
     );
   }
 
+   // Build answer choice card widget
   Widget _buildChoiceCard(String value, bool visible) {
     return Container(
       width: 60, // reduced from 80
@@ -530,6 +563,8 @@ class _MathMatchGameState extends State<MathMatchGame> {
     );
   }
 }
+
+// Science Crossword Game
 class ScienceCrosswordGame extends StatefulWidget {
   const ScienceCrosswordGame({super.key});
 
@@ -538,6 +573,7 @@ class ScienceCrosswordGame extends StatefulWidget {
 }
 
 class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
+   // Game levels data
   final List<Map<String, dynamic>> levels = [
     {
       'name': 'Animals',
@@ -591,6 +627,7 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
     },
   ];
 
+    // Game state
   int selectedLevelIndex = 0;
   List<List<String>> userInput = [];
   int hintCount = 0;
@@ -599,9 +636,10 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
   @override
   void initState() {
     super.initState();
-    _resetGrid();
+    _resetGrid();// Initialize the grid
   }
-
+  
+  // Reset the grid for current level
   void _resetGrid() {
     final grid = levels[selectedLevelIndex]['grid'] as List<List<String?>>;
     userInput = List.generate(grid.length,
@@ -609,7 +647,7 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
         growable: false);
     hintCount = 0;
   }
-
+  // Use hint to reveal one correct letter
   void _useHint() {
     final correctGrid = levels[selectedLevelIndex]['grid'] as List<List<String?>>;
     for (int r = 0; r < correctGrid.length; r++) {
@@ -625,11 +663,11 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
       }
     }
   }
-
+  // Check user answers against solution
   void _checkAnswers() {
     final correctGrid = levels[selectedLevelIndex]['grid'] as List<List<String?>>;
     int total = 0, correct = 0;
-
+    // Count correct answers
     for (int r = 0; r < correctGrid.length; r++) {
       for (int c = 0; c < correctGrid[r].length; c++) {
         final correctChar = correctGrid[r][c];
@@ -641,7 +679,8 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
         }
       }
     }
-
+  
+    // Show results dialog
     String message;
     if (correct == total) {
       message = '🎉 Great job! All correct!\n\n${(levels[selectedLevelIndex]['definitions'] as List<String>).join('\n')}';
@@ -667,11 +706,12 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
   Widget build(BuildContext context) {
     final level = levels[selectedLevelIndex];
     final grid = level['grid'] as List<List<String?>>;
-
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Science Crossword'),
         actions: [
+           // Level selector dropdown
           DropdownButton<int>(
             value: selectedLevelIndex,
             onChanged: (val) {
@@ -693,18 +733,23 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
+            // Crossword grid
             _buildGrid(grid),
             const SizedBox(height: 16),
+            // Clues section
             _buildClues(level),
             const SizedBox(height: 20),
+            // Action buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // Hint button
                 ElevatedButton.icon(
                   icon: const Icon(Icons.lightbulb),
                   label: Text('Hint (${maxHints - hintCount})'),
                   onPressed: hintCount < maxHints ? _useHint : null,
                 ),
+                // Check answers button
                 ElevatedButton.icon(
                   icon: const Icon(Icons.check),
                   label: const Text('Check'),
@@ -718,6 +763,7 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
     );
   }
 
+  // Build the crossword grid UI
   Widget _buildGrid(List<List<String?>> grid) {
     final rowCount = grid.length;
     final colCount = grid[0].length;
@@ -765,10 +811,12 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
     );
   }
 
+  // Build the clues section
   Widget _buildClues(Map<String, dynamic> level) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Across clues
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -781,6 +829,7 @@ class _ScienceCrosswordGameState extends State<ScienceCrosswordGame> {
           ),
         ),
         const SizedBox(width: 20),
+        // Down clues
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

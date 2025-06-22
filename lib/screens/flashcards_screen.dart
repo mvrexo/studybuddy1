@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+/// FlashcardsScreen displays a set of flashcards for study.
+/// Each card shows a question, and can reveal the answer and an image.
 class FlashcardsScreen extends StatefulWidget {
   const FlashcardsScreen({super.key});
 
@@ -9,6 +11,7 @@ class FlashcardsScreen extends StatefulWidget {
 }
 
 class _FlashcardsScreenState extends State<FlashcardsScreen> {
+  // List of all available flashcards (question, answer, image)
   final List<Map<String, dynamic>> allFlashcards = [
     // Science
     {'question': 'What planet do we live on?', 'answer': 'Earth', 'image': 'assets/earth.jpg'},
@@ -32,17 +35,22 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     {'question': 'What color is a banana?', 'answer': 'Yellow', 'image': 'assets/banana.jpg'},
   ];
 
-  int currentIndex = 0;
-  bool showAnswer = false;
-  List<Map<String, dynamic>> selectedFlashcards = [];
+  int currentIndex = 0; // Current flashcard index
+  bool showAnswer = false; // Whether to show answer or question
+  List<Map<String, dynamic>> selectedFlashcards = []; // Flashcards for this session
 
+  // Theme colors
   final Color themePrimary = Colors.deepOrangeAccent;
   final Color themeBackground = const Color(0xFFFFF5E1); // light cream
   final Color themeAccent = const Color(0xFF8B4513); // brown tone
 
-final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(255, 255, 255, 255));
+  // Card background colors (all white for now)
+  final List<Color> cardColors = List.generate(
+    6,
+    (index) => const Color.fromARGB(255, 255, 255, 255),
+  );
 
-
+  /// Returns a card color based on index
   Color getRandomCardColor(int index) {
     return cardColors[index % cardColors.length];
   }
@@ -50,10 +58,12 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
   @override
   void initState() {
     super.initState();
+    // Shuffle and pick 10 flashcards for the session
     allFlashcards.shuffle(Random());
     selectedFlashcards = allFlashcards.take(10).toList();
   }
 
+  /// Move to next card
   void nextCard() {
     setState(() {
       showAnswer = false;
@@ -61,6 +71,7 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
     });
   }
 
+  /// Move to previous card
   void previousCard() {
     setState(() {
       showAnswer = false;
@@ -89,6 +100,7 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            // Flashcard display
             Expanded(
               child: Center(
                 child: Container(
@@ -114,6 +126,7 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // Question or Answer text
                       Text(
                         showAnswer ? currentCard['answer']! : currentCard['question']!,
                         style: const TextStyle(
@@ -124,6 +137,7 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 20),
+                      // Show image if answer is revealed
                       if (showAnswer && currentCard['image'] != null)
                         Image.asset(
                           currentCard['image'],
@@ -131,6 +145,7 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
                           fit: BoxFit.contain,
                         ),
                       const SizedBox(height: 20),
+                      // Show/Hide Answer button
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
@@ -159,9 +174,11 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
               ),
             ),
             const SizedBox(height: 20),
+            // Navigation row (Previous, Counter, Next)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Previous button
                 ElevatedButton.icon(
                   onPressed: previousCard,
                   icon: const Icon(Icons.arrow_back),
@@ -173,6 +190,7 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
                     textStyle: const TextStyle(fontFamily: 'AlfaSlabOne'),
                   ),
                 ),
+                // Card counter
                 Text(
                   '${currentIndex + 1} / ${selectedFlashcards.length}',
                   style: const TextStyle(
@@ -181,6 +199,7 @@ final List<Color> cardColors = List.generate(6, (index) => const Color.fromARGB(
                     fontFamily: 'AlfaSlabOne',
                   ),
                 ),
+                // Next button
                 ElevatedButton.icon(
                   onPressed: nextCard,
                   icon: const Icon(Icons.arrow_forward),

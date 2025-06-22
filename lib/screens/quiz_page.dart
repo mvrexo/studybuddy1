@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+/// QuizPage is the main quiz screen widget.
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
 
@@ -9,10 +10,12 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  // Theme colors
   final Color themePrimary = Colors.deepOrangeAccent;
   final Color themeBackground = const Color(0xFFFFF5E1); // light cream
   final Color themeAccent = const Color(0xFF8B4513); // brown tone
 
+  // List of quiz questions, options, and answers
   final List<Map<String, dynamic>> questions = [
     {
       'question': 'What color is the sky?',
@@ -66,18 +69,19 @@ class _QuizPageState extends State<QuizPage> {
     },
   ];
 
-  int currentQuestion = 0;
-  late List<int?> selectedIndexes;
-  int score = 0;
-  Stopwatch stopwatch = Stopwatch();
-  late Timer timer;
-  int elapsedSeconds = 0;
+  int currentQuestion = 0; // Index of the current question
+  late List<int?> selectedIndexes; // Stores selected option index for each question
+  int score = 0; // User's score
+  Stopwatch stopwatch = Stopwatch(); // Timer for quiz duration
+  late Timer timer; // Periodic timer to update elapsed time
+  int elapsedSeconds = 0; // Elapsed time in seconds
 
   @override
   void initState() {
     super.initState();
     selectedIndexes = List.filled(questions.length, null);
     stopwatch.start();
+    // Update elapsedSeconds every second
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         elapsedSeconds = stopwatch.elapsed.inSeconds;
@@ -92,17 +96,21 @@ class _QuizPageState extends State<QuizPage> {
     super.dispose();
   }
 
+  /// Handles answer selection and quiz progression
   void selectAnswer(int selectedIndex) {
+    // Prevent changing answer after selection
     if (selectedIndexes[currentQuestion] != null) return;
 
     setState(() {
       selectedIndexes[currentQuestion] = selectedIndex;
+      // Increase score if answer is correct
       if (questions[currentQuestion]['options'][selectedIndex] ==
           questions[currentQuestion]['answer']) {
         score++;
       }
     });
 
+    // Move to next question or show result after a short delay
     Future.delayed(const Duration(seconds: 1), () {
       if (currentQuestion < questions.length - 1) {
         setState(() {
@@ -111,6 +119,7 @@ class _QuizPageState extends State<QuizPage> {
       } else {
         stopwatch.stop();
         timer.cancel();
+        // Show quiz completion dialog
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -123,6 +132,7 @@ class _QuizPageState extends State<QuizPage> {
             actions: [
               TextButton(
                 onPressed: () {
+                  // Restart quiz
                   setState(() {
                     currentQuestion = 0;
                     selectedIndexes = List.filled(questions.length, null);
@@ -154,182 +164,184 @@ class _QuizPageState extends State<QuizPage> {
     });
   }
 
- @override
-Widget build(BuildContext context) {
-  final question = questions[currentQuestion];
-  final selectedIndex = selectedIndexes[currentQuestion];
-  final correctAnswer = question['answer'];
+  @override
+  Widget build(BuildContext context) {
+    final question = questions[currentQuestion];
+    final selectedIndex = selectedIndexes[currentQuestion];
+    final correctAnswer = question['answer'];
 
-  double screenWidth = MediaQuery.of(context).size.width;
-  int optionsCount = question['options'].length;
-  double padding = 16 * 2;
-  double spacing = 12 * (optionsCount - 1);
-  double totalAvailableWidth = screenWidth - padding - spacing;
-  double optionSize = totalAvailableWidth / optionsCount;
+    // Calculate option tile size for responsive layout
+    double screenWidth = MediaQuery.of(context).size.width;
+    int optionsCount = question['options'].length;
+    double padding = 16 * 2;
+    double spacing = 12 * (optionsCount - 1);
+    double totalAvailableWidth = screenWidth - padding - spacing;
+    double optionSize = totalAvailableWidth / optionsCount;
 
-  return Scaffold(
-    backgroundColor: themeBackground,
-    appBar: AppBar(
-      backgroundColor: themePrimary,
-      title: const Text(
-        'Quiz',
-        style: TextStyle(fontFamily: 'AlfaSlabOne'),
+    return Scaffold(
+      backgroundColor: themeBackground,
+      appBar: AppBar(
+        backgroundColor: themePrimary,
+        title: const Text(
+          'Quiz',
+          style: TextStyle(fontFamily: 'AlfaSlabOne'),
+        ),
+        centerTitle: false, // Title aligned to left
       ),
-      centerTitle: false, // Title di kiri
-    ),
-    body: SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: themePrimary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: themeAccent, width: 1.5),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Question ${currentQuestion + 1} / ${questions.length}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'AlfaSlabOne',
-                      color: themeAccent,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Score: $score',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'AlfaSlabOne',
-                          color: themeAccent,
-                        ),
-                      ),
-                      Text(
-                        'Time: $elapsedSeconds s',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'AlfaSlabOne',
-                          color: themeAccent,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Center(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              // Quiz info panel
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: themePrimary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: themeAccent, width: 1.5),
+                ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        question['question'],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: themeAccent,
-                          fontFamily: 'AlfaSlabOne',
-                        ),
+                    Text(
+                      'Question ${currentQuestion + 1} / ${questions.length}',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'AlfaSlabOne',
+                        color: themeAccent,
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(optionsCount, (i) {
-                        final option = question['options'][i];
-                        final isCorrect = option == correctAnswer;
-                        final isSelected = selectedIndex == i;
-
-                        Color tileColor = Colors.white;
-                        Icon? icon;
-
-                        if (selectedIndex != null) {
-                          if (isCorrect) {
-                            tileColor = Colors.green[300]!;
-                            icon =
-                                const Icon(Icons.check, color: Colors.green);
-                          } else if (isSelected) {
-                            tileColor = Colors.red[300]!;
-                            icon =
-                                const Icon(Icons.close, color: Colors.red);
-                          } else {
-                            tileColor = Colors.grey[200]!;
-                          }
-                        }
-
-                        return GestureDetector(
-                          onTap: () => selectAnswer(i),
-                          child: Container(
-                            width: optionSize,
-                            height: optionSize,
-                            decoration: BoxDecoration(
-                              color: tileColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border:
-                                  Border.all(color: themeAccent, width: 1.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
-                            ),
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      option,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'AlfaSlabOne',
-                                        color: isSelected ||
-                                                (selectedIndex != null &&
-                                                    isCorrect)
-                                            ? Colors.white
-                                            : themeAccent,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                if (icon != null)
-                                  Positioned(
-                                    top: 4,
-                                    right: 4,
-                                    child: icon,
-                                  ),
-                              ],
-                            ),
+                      children: [
+                        Text(
+                          'Score: $score',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'AlfaSlabOne',
+                            color: themeAccent,
                           ),
-                        );
-                      }),
+                        ),
+                        Text(
+                          'Time: $elapsedSeconds s',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'AlfaSlabOne',
+                            color: themeAccent,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+              // Main quiz content
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Question text
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          question['question'],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: themeAccent,
+                            fontFamily: 'AlfaSlabOne',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      // Options row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(optionsCount, (i) {
+                          final option = question['options'][i];
+                          final isCorrect = option == correctAnswer;
+                          final isSelected = selectedIndex == i;
+
+                          Color tileColor = Colors.white;
+                          Icon? icon;
+
+                          // Show feedback colors and icons after selection
+                          if (selectedIndex != null) {
+                            if (isCorrect) {
+                              tileColor = Colors.green[300]!;
+                              icon = const Icon(Icons.check, color: Colors.green);
+                            } else if (isSelected) {
+                              tileColor = Colors.red[300]!;
+                              icon = const Icon(Icons.close, color: Colors.red);
+                            } else {
+                              tileColor = Colors.grey[200]!;
+                            }
+                          }
+
+                          return GestureDetector(
+                            onTap: () => selectAnswer(i),
+                            child: Container(
+                              width: optionSize,
+                              height: optionSize,
+                              decoration: BoxDecoration(
+                                color: tileColor,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: themeAccent, width: 1.5),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                    offset: Offset(2, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Stack(
+                                children: [
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        option,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'AlfaSlabOne',
+                                          color: isSelected ||
+                                                  (selectedIndex != null && isCorrect)
+                                              ? Colors.white
+                                              : themeAccent,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (icon != null)
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: icon,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

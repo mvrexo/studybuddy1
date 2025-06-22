@@ -4,17 +4,16 @@ import 'package:screenshot/screenshot.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+// =======================
 // THEME COLORS
+// =======================
 final Color themePrimary = Colors.deepOrangeAccent;
 final Color themeBackground = const Color(0xFFFFF5E1);
 final Color themeAccent = const Color(0xFF8B4513);
 
-class MindMapScreen extends StatefulWidget {
-  const MindMapScreen({super.key});
-  @override
-  _MindMapScreenState createState() => _MindMapScreenState();
-}
-
+// =======================
+// NODE DATA MODEL
+// =======================
 class Node {
   String label;
   String shape;
@@ -25,19 +24,32 @@ class Node {
   String? imageAsset;
   Offset position;
 
-  Node(this.label,
-      {this.shape = 'rectangle',
-      this.icon = Icons.circle,
-      Color? color,
-      this.facts = const [],
-      this.imageAsset,
-      this.position = const Offset(0, 0)})
-      : color = color ?? themePrimary,
+  Node(
+    this.label, {
+    this.shape = 'rectangle',
+    this.icon = Icons.circle,
+    Color? color,
+    this.facts = const [],
+    this.imageAsset,
+    this.position = const Offset(0, 0),
+  })  : color = color ?? themePrimary,
         children = [];
 }
 
+// =======================
+// MAIN SCREEN WIDGET
+// =======================
+class MindMapScreen extends StatefulWidget {
+  const MindMapScreen({super.key});
+  @override
+  _MindMapScreenState createState() => _MindMapScreenState();
+}
+
+// State class for the Mind Map screen widget
 class _MindMapScreenState extends State<MindMapScreen> {
+  // Root node of the mind map
   late Node animalRoot;
+   // Controller for capturing screenshots of the mind map
   final ScreenshotController _screenshotController = ScreenshotController();
 
   // Predefined colors to pick
@@ -64,20 +76,24 @@ class _MindMapScreenState extends State<MindMapScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeMindMap();
+    _initializeMindMap(); // Initialize the mind map structure when widget loads
   }
 
+  // Initializes the mind map with root node and child nodes
  void _initializeMindMap() {
+  // Create root node with initial properties
   animalRoot = Node("Animal",
       shape: 'rectangle',
       color: Colors.orangeAccent,
       imageAsset: 'assets/animal.jpg',
-      position: const Offset(450, 30)); // naikkan juga posisi root
+      position: const Offset(450, 30)); // Positioned near top center
 
-  double spacing = 150; // dikurangkan supaya lebih padat
+  // Spacing and positioning for child nodes
+  double spacing = 150; 
   double startX = 50;
-  double y = 180; // dinaikkan supaya tidak tutup butang bawah
+  double y = 180; // Vertical position under root
 
+   // Add all child nodes with their properties and facts
   animalRoot.children.addAll([
     Node("Fish",
         shape: 'rectangle',
@@ -143,10 +159,13 @@ class _MindMapScreenState extends State<MindMapScreen> {
         ]),
   ]);
 }
-
+  
+   // Opens dialog to edit an existing node
   void _editNode(Node node) async {
+    // Controllers for text fields
     final labelCtrl = TextEditingController(text: node.label);
     final factCtrl = TextEditingController();
+    // Store current properties for editing
     String selectedShape = node.shape;
     Color selectedColor = node.color;
     String? selectedImage = node.imageAsset;
@@ -164,7 +183,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Label
+                // Label editor
                 TextField(
                     controller: labelCtrl,
                     decoration: const InputDecoration(labelText: 'Label'),
@@ -351,6 +370,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
     );
   }
 
+  // Opens dialog to add a new node
   void _addNode() async {
     final labelCtrl = TextEditingController(text: 'New Node');
     final factCtrl = TextEditingController();
@@ -567,7 +587,8 @@ class _MindMapScreenState extends State<MindMapScreen> {
       ),
     );
   }
-
+ 
+   // Captures mind map as PDF and shares it
   Future<void> _saveAsImage() async {
     final image = await _screenshotController.capture();
     if (image != null) {
@@ -588,7 +609,9 @@ class _MindMapScreenState extends State<MindMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get all nodes for rendering
     final nodes = [animalRoot, ...animalRoot.children];
+    // Create draggable widgets for each node
     final nodeWidgets = nodes.map((node) => _buildDraggableNode(node)).toList();
 
     return Scaffold(
@@ -602,6 +625,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Stack(
+        // Screenshot capture area
         children: [
           Screenshot(
             controller: _screenshotController,
@@ -614,6 +638,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
                     alignment: Alignment.topCenter,
                   ),
                 ),
+                 // Draw connections between nodes
                 CustomPaint(
                   painter: DoodleArrowPainter(animalRoot),
                   size: Size.infinite,
@@ -622,6 +647,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
               ],
             ),
           ),
+          // Floating action buttons
           Positioned(
             bottom: 20,
             right: 20,
@@ -662,6 +688,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
     );
   }
 
+  // Creates a draggable node widget
   Widget _buildDraggableNode(Node node) {
     return Positioned(
       left: node.position.dx,
@@ -674,6 +701,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
         ),
         childWhenDragging: Opacity(opacity: 0.3, child: _nodeBox(node)),
         onDragEnd: (details) {
+          // Update node position after drag
           setState(() {
             final appBarHeight =
                 AppBar().preferredSize.height + MediaQuery.of(context).padding.top;
@@ -688,10 +716,12 @@ class _MindMapScreenState extends State<MindMapScreen> {
     );
   }
 
+  // Creates the visual representation of a node
   Widget _nodeBox(Node node) {
     Widget content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Node header with icon and label
         Row(
           children: [
             Icon(node.icon, color: node.color, size: 24),
@@ -723,6 +753,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
       ],
     );
 
+    // Returns decoration based on node shape
     BoxDecoration decoration;
 
     switch (node.shape) {
@@ -775,6 +806,7 @@ class _MindMapScreenState extends State<MindMapScreen> {
   }
 }
 
+// Custom painter that draws connecting arrows between nodes
 class DoodleArrowPainter extends CustomPainter {
   final Node root;
   DoodleArrowPainter(this.root);
@@ -786,9 +818,11 @@ class DoodleArrowPainter extends CustomPainter {
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke;
 
+    // Draw connection from root to each child
     for (var child in root.children) {
       final start = Offset(root.position.dx + 125, root.position.dy + 80);
       final end = Offset(child.position.dx + 125, child.position.dy);
+       // Create curved path
       final path = Path();
       path.moveTo(start.dx, start.dy);
       final midX = (start.dx + end.dx) / 2;
@@ -800,6 +834,7 @@ class DoodleArrowPainter extends CustomPainter {
     }
   }
 
+  // Helper to draw arrowhead at end of connection
   void _drawArrowhead(Canvas canvas, Paint paint, Offset tip, Offset from) {
     final angle = (tip - from).direction;
     const size = 10.0;
@@ -808,7 +843,7 @@ class DoodleArrowPainter extends CustomPainter {
     path.lineTo(tip.dx - size * cos(angle - pi / 6), tip.dy - size * sin(angle - pi / 6));
     path.moveTo(tip.dx, tip.dy);
     path.lineTo(tip.dx - size * cos(angle + pi / 6), tip.dy - size * sin(angle + pi / 6));
-    canvas.drawPath(path, paint);
+    canvas.drawPath(path, paint);// Draw two lines forming the arrowhead
   }
 
   @override

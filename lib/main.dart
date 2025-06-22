@@ -3,17 +3,19 @@ import 'package:studdybuddy1/screens/login.dart';
 import 'package:studdybuddy1/screens/sign_up.dart';
 import 'package:studdybuddy1/screens/splash_screen.dart';
 import 'package:studdybuddy1/screens/forgot_password.dart';
-import 'calendar_screen.dart'; // Make sure this file has a proper widget class
+import 'calendar_screen.dart'; // Calendar screen import
 
+// Theme colors and font
 final Color themePrimary = Colors.deepOrangeAccent;
-final Color themeBackground = const Color(0xFFFFF5E1); // light cream
-final Color themeAccent = const Color(0xFF8B4513); // brown tone
+final Color themeBackground = const Color(0xFFFFF5E1); // Light cream
+final Color themeAccent = const Color(0xFF8B4513); // Brown tone
 final String fontFamily = 'AlfaSlabOne';
 
 void main() {
   runApp(const StudyBuddyApp());
 }
 
+/// The root widget of the Study Buddy app.
 class StudyBuddyApp extends StatelessWidget {
   const StudyBuddyApp({super.key});
 
@@ -58,7 +60,9 @@ class StudyBuddyApp extends StatelessWidget {
           ),
         ),
       ),
+      // Initial screen
       home: const SplashScreen(),
+      // Named routes for navigation
       routes: {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),

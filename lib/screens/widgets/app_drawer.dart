@@ -159,14 +159,12 @@ class _AppDrawerState extends State<AppDrawer> {
                         username: studentName,
                         currentLanguage: _language,
                         onLanguageChanged: (lang) => setState(() => _language = lang),
-                        currentThemeMode: _themeMode,
-                        onThemeModeChanged: (mode) => setState(() => _themeMode = mode),
                         isDarkMode: _themeMode == ThemeMode.dark,
                         onDarkModeChanged: (bool value) {
                           setState(() {
                             _themeMode = value ? ThemeMode.dark : ThemeMode.light;
                           });
-                        },
+                        }, onUsernameChanged: (String value) {  }, onDeleteAccount: () {  },
                       ),
                     ),
                     

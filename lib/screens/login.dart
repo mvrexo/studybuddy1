@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'dashboard.dart';
 
+/// LoginScreen displays the login form with animated bees and logo.
 class LoginScreen extends StatefulWidget {
   final bool showLogoutMessage;
   const LoginScreen({super.key, this.showLogoutMessage = false});
@@ -12,10 +13,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+  // Controllers for email and password fields
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  // Password visibility toggle
   bool _obscurePassword = true;
 
+  // Animation controllers for bee movement
   late AnimationController _animationController;
   late Animation<double> _leftBeeXAnimation;
   late Animation<double> _leftBeeYAnimation;
@@ -25,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
+
+    // Show logout message if needed
     if (widget.showLogoutMessage) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -33,18 +40,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       });
     }
 
+    // Initialize animation controller for bees
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
     )..repeat(reverse: true);
 
+    // Bee movement animations
     _leftBeeXAnimation = Tween<double>(begin: -60, end: 160).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
     _leftBeeYAnimation = Tween<double>(begin: -10, end: 10).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOutSine),
     );
-
     _rightBeeXAnimation = Tween<double>(begin: -60, end: 160).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
@@ -61,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     super.dispose();
   }
 
+  /// Handles login logic and navigates to DashboardScreen
   void _handleLogin() async {
     await Future.delayed(const Duration(seconds: 1));
     Navigator.pushReplacement(
@@ -71,10 +80,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
   }
 
+  /// Navigates to forgot password screen
   void _handleForgotPassword() {
     Navigator.pushNamed(context, '/forgot_password');
   }
 
+  /// Returns input decoration for text fields
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
@@ -98,29 +109,34 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     return Scaffold(
       body: Stack(
         children: [
+          // Background image
           Positioned.fill(
             child: Image.asset(
               'assets/awan.jpg',
               fit: BoxFit.cover,
             ),
           ),
+          // Blur effect overlay
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
               child: Container(color: Colors.white.withOpacity(0.2)),
             ),
           ),
+          // Main content
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Logo and animated bees
                   SizedBox(
-                    height: 150, // cukup ruang untuk bee dan logo
+                    height: 150,
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
+                        // Logo
                         Center(
                           child: SizedBox(
                             width: 800,
@@ -131,6 +147,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             ),
                           ),
                         ),
+                        // Left bee animation
                         AnimatedBuilder(
                           animation: _animationController,
                           builder: (context, child) {
@@ -147,6 +164,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             );
                           },
                         ),
+                        // Right bee animation
                         AnimatedBuilder(
                           animation: _animationController,
                           builder: (context, child) {
@@ -167,6 +185,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     ),
                   ),
                   const SizedBox(height: 10),
+                  // Animated welcome text
                   AnimatedTextKit(
                     animatedTexts: [
                       TypewriterAnimatedText(
@@ -185,6 +204,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     isRepeatingAnimation: true,
                   ),
                   const SizedBox(height: 20),
+                  // Login form container
                   Container(
                     width: 340,
                     padding: const EdgeInsets.all(25),
@@ -202,6 +222,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        // Email field
                         TextField(
                           controller: emailController,
                           decoration: _inputDecoration('Email'),
@@ -211,6 +232,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           ),
                         ),
                         const SizedBox(height: 15),
+                        // Password field with visibility toggle
                         TextField(
                           controller: passwordController,
                           obscureText: _obscurePassword,
@@ -233,6 +255,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           ),
                         ),
                         const SizedBox(height: 10),
+                        // Login button
                         ElevatedButton(
                           onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(
@@ -251,6 +274,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             ),
                           ),
                         ),
+                        // Forgot password button
                         Align(
                           alignment: Alignment.centerRight,
                           child: Padding(
@@ -260,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               icon: const Icon(
                                 Icons.lock_outline,
                                 size: 14,
-                                color:  Colors.brown,
+                                color: Colors.brown,
                               ),
                               label: const Text(
                                 'Forgot Password?',
@@ -279,6 +303,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           ),
                         ),
                         const SizedBox(height: 15),
+                        // Register button
                         TextButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/signup');
